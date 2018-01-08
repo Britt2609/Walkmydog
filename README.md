@@ -14,3 +14,4 @@ de email van het baasje en elkaar mailen om afspraken te maken.
 
 ## Visualisatie
 
+![screenshot app](doc/walkmydogvisualisatie.png)
