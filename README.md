@@ -16,11 +16,11 @@ Als ik tijd over heb wil ik dat de uitlaters ook beoordeeld kunnen worden. Zo ka
 ![visualisatie app](doc/walk_my_dog_visualisatie.jpg)
 
 #### Main features
-*Account aanmaken/inloggen als baasje of uitlater.
-*Als baasje een advertentie kunnen plaatsen.
-*Als uitlater advertenties zien van anderen inclusief locatie.
-*Alleen advertenties in de buurt zien.
-*Contactgegevens zien van gekozen advertentie.
+* **Account aanmaken/inloggen als baasje of uitlater.**
+* **Als baasje een advertentie kunnen plaatsen.**
+* **Als uitlater advertenties zien van anderen inclusief locatie.**
+* **Alleen advertenties in de buurt zien.**
+* **Contactgegevens zien van gekozen advertentie.**
 
 ## Prerequisites
 #### Datasource
