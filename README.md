@@ -14,4 +14,4 @@ de email van het baasje en elkaar mailen om afspraken te maken.
 
 ## Visualisatie
 
-![visualisatie app](doc/walk_my_dog_visualisatie.jpeg)
+![visualisatie app](doc/walk_my_dog_visualisatie.jpg)
