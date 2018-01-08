@@ -1,7 +1,5 @@
 # Project proposal
 
-## Summary
-
 ## Problem
 Honden baasjes hebben vaak het probleem dat ze geen tijd hebben om de hond uit te laten. 
 Gelukkig zijn er ook mensen die geen hond hebben om bijvoorbeeld de reden dat het veel geld kost of
