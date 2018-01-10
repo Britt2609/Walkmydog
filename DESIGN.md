@@ -11,9 +11,9 @@ Database
     * email
     * locatie
     * hond
-     ** omschrijving
-     ** foto
-     ** hondennaam
+      * omschrijving
+      * foto
+      * hondennaam
     * advertentiestatus
   * uitlaters
     * naam uitlater
