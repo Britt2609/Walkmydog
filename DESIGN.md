@@ -2,11 +2,11 @@
 Voor het aanmaken van een account ga ik firebase gebruiken met inlognaam en wachtwoord. 
 
 Database authentication:
-* Gebruikers
- * email
- * tijd van registratie
- * wachtwoord
- * gebruikers id
+ * Gebruikers
+  * email
+  * tijd van registratie
+  * wachtwoord
+  * gebruikers id
 
 Ik maak een database met 2 delen:
 * Een deel voor de baasjes met een foto, omschrijving, naam van het baasje, email van het baasje, naam van de hond, locatie van de hond en of er een advertentie uitstaat. 
