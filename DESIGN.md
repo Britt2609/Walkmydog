@@ -9,10 +9,11 @@ Database
   * baasjes
     * naam
     * email
-    * omschrijving
-    * foto
     * locatie
-    * hondennaam
+    * hond
+     * omschrijving
+     * foto
+     * hondennaam
     * advertentiestatus
   * uitlaters
     * naam uitlater
