@@ -2,6 +2,7 @@
 Voor het aanmaken van een account ga ik firebase gebruiken met inlognaam en wachtwoord. 
 
 Database authentication:
+
 Gebruikers
   * email
   * tijd van registratie
