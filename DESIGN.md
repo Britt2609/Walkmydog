@@ -28,7 +28,7 @@ Database
     * naam uitlater
     * lijst van afspraken
     
-
+![design](doc/design_visualisatie.jpg)
 
 ## Activities
 #### MainActivity:
