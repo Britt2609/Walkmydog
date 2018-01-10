@@ -105,6 +105,7 @@ Uitleg:
 
 Functie:
 * addAdvertToDatabase()
+* getLocation()
 * goToConfirm() (onClick, intent)
 
 #### ConfirmActivity: 
