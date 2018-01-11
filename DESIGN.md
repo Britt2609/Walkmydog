@@ -27,10 +27,12 @@ Database
   * uitlaters
     * naam uitlater
     * lijst van afspraken
-    
+
+
+## Activities    
+
 ![design](doc/design_visualisatie.jpg)
 
-## Activities
 #### MainActivity:
 Uitleg:
 * Login page. 
