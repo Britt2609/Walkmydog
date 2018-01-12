@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "767219664734",
+    "firebase_url": "https://walkmydog-4be33.firebaseio.com",
+    "project_id": "walkmydog-4be33",
+    "storage_bucket": "walkmydog-4be33.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:767219664734:android:58ecb61d8b11dbb5",
+        "android_client_info": {
+          "package_name": "com.example.britt.walkmydog"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "767219664734-26met3gkfttq0rf4lm2piljacprprpjq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.britt.walkmydog",
+            "certificate_hash": "3bf3b98b4bee110dadfecf9766c8885d3db2573f"
+          }
+        },
+        {
+          "client_id": "767219664734-iobomg0pjoltnutsbtb9o4oh6bjpu0fh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA96xtGToY8iS8mw-ztIpFXRdK8IQe9tNs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "767219664734-iobomg0pjoltnutsbtb9o4oh6bjpu0fh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
