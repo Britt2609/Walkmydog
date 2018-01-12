@@ -157,4 +157,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    public void goToNext(View view) {
+        Intent intent = new Intent(MainActivity.this, AdvertActivity.class);
+        startActivity(intent);
+    }
+
 }

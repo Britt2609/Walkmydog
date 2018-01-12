@@ -152,9 +152,10 @@ public class RegisterActivity extends AppCompatActivity {
      */
     public void addUser() {
         id = mAuth.getCurrentUser().getUid();
+        Log.w(TAG, "user id" + id);
         if (type.equals("owner")) {
             Owner aUser;
-            aUser = new Owner(name, email, false);
+            aUser = new Owner(name, email,"dog",false);
             databaseReference.child("owner").child(id).setValue(aUser);
         }
         else {
