@@ -55,9 +55,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Set AuthStateListener to make sure only logged in users can go to next activity.
         mAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        getFromDB();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
 
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -91,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         };
     }
-
     public void getFromDB() {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -101,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.w("value failure: ", "Failed to read value.", error.toException());
+                Log.w("value failure: ", "Failed to read value.");
             }
         });
     }
@@ -137,6 +135,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 // Sign in success, update UI with the signed-in user's information and go to next activity.
                                 Log.d(TAG, "signInWithEmail:success");
 
+                                mAuth = FirebaseAuth.getInstance();
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                Log.w("USERR", "User " + user);
+                                id = user.getUid();
+
+
+                                getFromDB();
 
                                 if (mUser.userType.equals("owner")) {
                                     Intent intent = new Intent(MainActivity.this, AdvertActivity.class);
