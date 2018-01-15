@@ -95,6 +95,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mUser = dataSnapshot.child("users").child(id).getValue(User.class);
+
+                if (mUser.userType.equals("owner")) {
+                    Intent intent = new Intent(MainActivity.this, AdvertActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+                else if (mUser.userType.equals("walker")){
+                    Intent intent = new Intent(MainActivity.this, ChooseActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "Type is fout!!!!",
+                            Toast.LENGTH_SHORT).show();
+                }
+
             }
 
             @Override
@@ -143,20 +159,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                                 getFromDB();
 
-                                if (mUser.userType.equals("owner")) {
-                                    Intent intent = new Intent(MainActivity.this, AdvertActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                                else if (mUser.userType.equals("walker")){
-                                    Intent intent = new Intent(MainActivity.this, ChooseActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                                else {
-                                    Toast.makeText(MainActivity.this, "Type is fout!!!!",
-                                            Toast.LENGTH_SHORT).show();
-                                }
+
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "signInWithEmail:failure", task.getException());

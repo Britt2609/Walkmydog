@@ -166,12 +166,12 @@ public class RegisterActivity extends AppCompatActivity {
         if (type.equals("owner")) {
             Owner aOwner;
             aOwner = new Owner(name, email,"dog",false);
-            databaseReference.child("owner").child(id).setValue(aOwner);
+            databaseReference.child("types").child("owner").child(id).setValue(aOwner);
         }
         else {
             Walker aWalker;
             aWalker = new Walker(name, email);
-            databaseReference.child("walker").child(id).setValue(aWalker);
+            databaseReference.child("types").child("walker").child(id).setValue(aWalker);
         }
 
     }
