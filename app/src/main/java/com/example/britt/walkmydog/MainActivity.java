@@ -15,8 +15,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -37,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button login;
     Button useremail;
 
+    User mUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Set AuthStateListener to make sure only logged in users can go to next activity.
         mAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        getFromDB();
 
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -85,6 +92,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         };
     }
 
+    public void getFromDB() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mUser = dataSnapshot.child("users").child(id).getValue(User.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("value failure: ", "Failed to read value.", error.toException());
+            }
+        });
+    }
+
+
 
     /**
      * Logs in user with email and password.
@@ -99,11 +121,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Check if email and password are filled in.
         if (email.equals("")) {
-            Toast.makeText(MainActivity.this, "Please fill in an email!",
+            Toast.makeText(MainActivity.this, "Vul aub een emailadres in!",
                     Toast.LENGTH_SHORT).show();
         }
         else if (password.equals("")) {
-            Toast.makeText(MainActivity.this, "Please fill in a valid email and password!",
+            Toast.makeText(MainActivity.this, "Vul aub een wachtwoord in!",
                     Toast.LENGTH_SHORT).show();
         }
         else {
@@ -115,24 +137,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 // Sign in success, update UI with the signed-in user's information and go to next activity.
                                 Log.d(TAG, "signInWithEmail:success");
 
-//                                User mUser;
-//
-//                                mUser = dataSnapshot.child("users").child(id).getValue(User.class);
 
-                                if (type == "owner") {
+                                if (mUser.userType.equals("owner")) {
                                     Intent intent = new Intent(MainActivity.this, AdvertActivity.class);
                                     startActivity(intent);
                                     finish();
                                 }
-                                else {
+                                else if (mUser.userType.equals("walker")){
                                     Intent intent = new Intent(MainActivity.this, ChooseActivity.class);
                                     startActivity(intent);
                                     finish();
                                 }
+                                else {
+                                    Toast.makeText(MainActivity.this, "Type is fout!!!!",
+                                            Toast.LENGTH_SHORT).show();
+                                }
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                Toast.makeText(MainActivity.this, "Wrong email and/or password!",
+                                Toast.makeText(MainActivity.this, "Email en wachtwoord kloppen niet!",
                                         Toast.LENGTH_SHORT).show();
                             }
 

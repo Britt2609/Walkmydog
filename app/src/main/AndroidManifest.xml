@@ -4,7 +4,10 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
 
-    <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.media.action.IMAGE_CAPTURE" />
+
+    <uses-feature android:name="android.hardware.camera"
+        android:required="true" />
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -28,7 +31,6 @@
         <activity android:name=".AdvertActivity" />
         <activity android:name=".ChooseActivity" />
         <activity android:name=".ConfirmActivity" />
-        <activity android:name=".CameraView" />
         <activity android:name=".DogActivity" />
         <activity android:name=".OverviewActivity" />
         <activity android:name=".ContactActivity"></activity>

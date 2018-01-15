@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "767219664734-ca8cd81e9432bauqug6pl172tt8m399k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.britt.walkmydog",
+            "certificate_hash": "ba7517da50cd6f06728eb4c28ee5c183dcb79b2f"
+          }
+        },
+        {
           "client_id": "767219664734-26met3gkfttq0rf4lm2piljacprprpjq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

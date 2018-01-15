@@ -93,23 +93,23 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Check if email and password are filled in.
         if (email.equals("")) {
-            Toast.makeText(RegisterActivity.this, "Please fill in an email!",
+            Toast.makeText(RegisterActivity.this, "Vul aub een emailadres in!",
                     Toast.LENGTH_SHORT).show();
         }
         else if (password.equals("")) {
-            Toast.makeText(RegisterActivity.this, "Please fill in an password of at least 6 characters!",
+            Toast.makeText(RegisterActivity.this, "Vul aub een wachtwoord in van ten minste 6 tekens!",
                     Toast.LENGTH_SHORT).show();
         }
         else if (name.equals("")) {
-            Toast.makeText(RegisterActivity.this, "Please fill in a name!",
+            Toast.makeText(RegisterActivity.this, "Vul aub een naam in!",
                     Toast.LENGTH_SHORT).show();
         }
         else if (type.equals("")) {
-            Toast.makeText(RegisterActivity.this, "Please fill in an type of user!",
+            Toast.makeText(RegisterActivity.this, "Vink aub een type gebruiker aan!",
                     Toast.LENGTH_SHORT).show();
         }
         else if (!password.equals(password2)) {
-            Toast.makeText(RegisterActivity.this, "Password do not match!",
+            Toast.makeText(RegisterActivity.this, "Wachtwoorden komen niet overeen!",
                     Toast.LENGTH_SHORT).show();
         }
         else {
@@ -123,21 +123,25 @@ public class RegisterActivity extends AppCompatActivity {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 addUser();
 
-                                if (type == "owner") {
+                                if (type.equals("owner")) {
                                     Intent intent = new Intent(RegisterActivity.this, AdvertActivity.class);
                                     startActivity(intent);
                                     finish();
                                 }
-                                else {
+                                else if (type.equals("walker")){
                                     Intent intent = new Intent(RegisterActivity.this, ChooseActivity.class);
                                     startActivity(intent);
                                     finish();
+                                }
+                                else {
+                                    Toast.makeText(RegisterActivity.this, "Type gaat fout!",
+                                            Toast.LENGTH_SHORT).show();
                                 }
 
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                Toast.makeText(RegisterActivity.this, "Please fill in an password of at least 6 characters!",
+                                Toast.makeText(RegisterActivity.this, "Inloggen niet gelukt!",
                                         Toast.LENGTH_SHORT).show();
                             }
 
@@ -153,14 +157,21 @@ public class RegisterActivity extends AppCompatActivity {
     public void addUser() {
         id = mAuth.getCurrentUser().getUid();
         Log.w(TAG, "user id" + id);
+
+        User aUser;
+        aUser = new User(type);
+        databaseReference.child("users").child(id).setValue(aUser);
+
+
         if (type.equals("owner")) {
-            Owner aUser;
-            aUser = new Owner(name, email,"dog",false);
-            databaseReference.child("owner").child(id).setValue(aUser);
+            Owner aOwner;
+            aOwner = new Owner(name, email,"dog",false);
+            databaseReference.child("owner").child(id).setValue(aOwner);
         }
         else {
-            Walker aUser = new Walker(name, email);
-            databaseReference.child("walker").child(id).setValue(aUser);
+            Walker aWalker;
+            aWalker = new Walker(name, email);
+            databaseReference.child("walker").child(id).setValue(aWalker);
         }
 
     }
