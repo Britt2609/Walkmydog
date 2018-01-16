@@ -9,16 +9,16 @@ import android.widget.ImageView;
 public class Dog {
     public String name;
     public String description;
-    public ImageView photo;
+    //public ImageView photo;
     public Double lat;
     public Double lon;
 
     public Dog() {}
 
-    public Dog(String name, String description, ImageView photo, Double lat, Double lon) {
+    public Dog(String name, String description, Double lat, Double lon) {
         this.name = name;
         this.description = description;
-        this.photo = photo;
+        //this.photo = photo;
         this.lat = lat;
         this.lon = lon;
     }

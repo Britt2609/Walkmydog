@@ -138,10 +138,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(MainActivity.this, "Vul aub een emailadres in!",
                     Toast.LENGTH_SHORT).show();
         }
+
         else if (password.equals("")) {
             Toast.makeText(MainActivity.this, "Vul aub een wachtwoord in!",
                     Toast.LENGTH_SHORT).show();
         }
+
         else {
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -187,10 +189,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
-
-    public void goToNext(View view) {
-        Intent intent = new Intent(MainActivity.this, AdvertActivity.class);
-        startActivity(intent);
-    }
-
 }

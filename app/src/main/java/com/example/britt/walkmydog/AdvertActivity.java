@@ -1,13 +1,22 @@
 package com.example.britt.walkmydog;
 
+import android.*;
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Looper;
 import android.provider.MediaStore;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,9 +26,16 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Calendar;
+
+import static java.lang.Double.valueOf;
 
 public class AdvertActivity extends AppCompatActivity {
 
@@ -37,7 +53,24 @@ public class AdvertActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
+    int myCameraRequestCode = 100;
+    int myLocationRequestCode = 100;
+
     private DatabaseReference databaseReference;
+
+    double longitude = 0.0000 ;
+    double latitude = 0.0000 ;
+
+    Boolean boolCamera = false;
+    Boolean boolLocation = true;
+
+    TextView tekst;
+
+    private LocationListener locationListener;
+    private LocationManager locationManager;
+
+    EditText dog_name;
+    EditText dog_description;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +84,18 @@ public class AdvertActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        EditText dog_name = findViewById(R.id.dogName);
-        dogName = dog_name.getText().toString();
-        EditText dog_description = findViewById(R.id.description);
-        description = dog_description.getText().toString();
+        dog_name = findViewById(R.id.dogName);
+        dog_description = findViewById(R.id.description);
 
         photo = findViewById(R.id.Photo);
+
+        tekst = findViewById(R.id.useLogo);
+
+        if (ActivityCompat.checkSelfPermission(AdvertActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(AdvertActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, myLocationRequestCode);
+        }
+
+        databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
     /**
@@ -73,7 +112,55 @@ public class AdvertActivity extends AppCompatActivity {
     }
 
     public void makePicture(View view) {
-        dispatchTakePictureIntent();
+        // Here, thisActivity is the current activity
+
+        boolCamera = true;
+        boolLocation = false;
+
+        if (ActivityCompat.checkSelfPermission(AdvertActivity.this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(AdvertActivity.this, new String[]{android.Manifest.permission.CAMERA}, myCameraRequestCode);
+        }
+        else {
+            dispatchTakePictureIntent();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (boolLocation) {
+            if (requestCode == myLocationRequestCode) {
+
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    Toast.makeText(this, "location permission granted", Toast.LENGTH_LONG).show();
+                    getLocation();
+
+                } else {
+
+                    Toast.makeText(this, "location permission denied", Toast.LENGTH_LONG).show();
+
+                }
+            }
+        }
+
+        if (boolCamera) {
+            if (requestCode == myCameraRequestCode) {
+
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
+                    dispatchTakePictureIntent();
+
+                } else {
+
+                    Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
+
+                }
+            }
+        }
     }
 
 
@@ -93,29 +180,68 @@ public class AdvertActivity extends AppCompatActivity {
         }
     }
 
+    public void getLocation()throws SecurityException {
+
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        // this listener checks what happens with the locationservice
+        locationListener = new LocationListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onLocationChanged(Location location) {
+                // this method is triggered when a user is detected in new location
+                Log.d("gps", "updated");
+
+                // get coordinates of user
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+
+                tekst.setText(latitude + "   " + longitude);
+
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+                // necessity
+                Log.w("TAGG", " HELLOOOO");
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+                // necessity
+                Log.w("TAGG", " HOOOOOOOOI");
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+                Log.w("TAGG", " HAAI");
+
+
+                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            }
+        };
+
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+
+    }
+
+
     public void makeAdvert(View view) {
 
-//        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-////        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-////             ODO: Consider calling
-////            //    ActivityCompat#requestPermissions
-////            // here to request the missing permissions, and then overriding
-////            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-////            //                                          int[] grantResults)
-////            // to handle the case where the user grants the permission. See the documentation
-////            // for ActivityCompat#requestPermissions for more details.
-////            return;
-////        }
-//        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//        double longitude = location.getLongitude();
-//        double latitude = location.getLatitude();
 
+        description = dog_description.getText().toString();
+        dogName = dog_name.getText().toString();
 
+        mAuth = FirebaseAuth.getInstance();
         id = mAuth.getCurrentUser().getUid();
         Log.w("userid", id);
         Dog aDog;
-//        aDog = new Dog(dogName, description, photo, latitude, longitude);
-//        databaseReference.child("owner").child(id).child("dog").setValue(aDog);
+        aDog = new Dog(dogName, description, latitude, longitude);
+
+        Log.w("NAMEE", dogName + " " + description);
+
+        databaseReference.child("types").child("owner").child(id).child("dog").setValue(aDog);
 
         Intent intent = new Intent(AdvertActivity.this, ConfirmActivity.class);
 //        intent.putExtra("photo", photo);
