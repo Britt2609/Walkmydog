@@ -19,7 +19,7 @@ Classes en interfaces beginnen met 'Pascalcase'.
 Acolades niet altijd een eigen regel geven alleen bij het sluiten van een trail.
 
 Geef voorkeur aan enkele initialisering per regel bij fields en variabelen, 
-bijvoorbeeld String text1, text2 wordt liever niet gebruikt om het overzichtelijk te houden.
+bijvoorbeeld 'String text1, text2' wordt liever niet gebruikt om het overzichtelijk te houden.
 
 Laat de exceptions niet leeg, laat de exception duidelijk iets doen zodat je kan zien wat er fout gaat en waar het fout gaat.
 
