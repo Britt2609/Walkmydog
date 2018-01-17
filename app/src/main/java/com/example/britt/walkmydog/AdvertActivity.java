@@ -14,11 +14,13 @@ import android.location.LocationManager;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.provider.SyncStateContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,6 +35,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
 
 import static java.lang.Double.valueOf;
@@ -43,6 +46,7 @@ public class AdvertActivity extends AppCompatActivity {
     String dogName;
     String description;
     String id;
+    String picture;
 
     ImageView photo;
 
@@ -72,10 +76,14 @@ public class AdvertActivity extends AppCompatActivity {
     EditText dog_name;
     EditText dog_description;
 
+    Bitmap imageBitmap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_advert);
+
+        Log.d("TAGG", "hee hallo");
 
         // Set spinner to be able to choose category.
         spinner = findViewById(R.id.spinner3);
@@ -96,6 +104,7 @@ public class AdvertActivity extends AppCompatActivity {
         }
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
+
     }
 
     /**
@@ -175,9 +184,17 @@ public class AdvertActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            imageBitmap = (Bitmap) extras.get("data");
             photo.setImageBitmap(imageBitmap);
+            encodeBitmapAndSaveToFirebase(imageBitmap);
         }
+    }
+
+    public void encodeBitmapAndSaveToFirebase(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        String imageEncoded = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+        picture = imageEncoded;
     }
 
     public void getLocation()throws SecurityException {
@@ -237,20 +254,18 @@ public class AdvertActivity extends AppCompatActivity {
         id = mAuth.getCurrentUser().getUid();
         Log.w("userid", id);
         Dog aDog;
-        aDog = new Dog(dogName, description, latitude, longitude);
+        aDog = new Dog(dogName, description, picture, latitude, longitude);
 
         Log.w("NAMEE", dogName + " " + description);
 
         databaseReference.child("types").child("owner").child(id).child("dog").setValue(aDog);
 
-        Intent intent = new Intent(AdvertActivity.this, ConfirmActivity.class);
-//        intent.putExtra("photo", photo);
-        intent.putExtra("dogName", dogName);
-        startActivity(intent);
-    }
+        databaseReference.child("dogs").child(id).child("dog").setValue(aDog);
 
-    public void goToNext(View view) {
         Intent intent = new Intent(AdvertActivity.this, ConfirmActivity.class);
+//        intent.putExtra("photo", picture);
+//        intent.putExtra("dogName", dogName);
         startActivity(intent);
+        finish();
     }
 }

@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".AdvertActivity" />
+        <activity android:name=".AdvertActivity" android:launchMode="singleInstance" />
         <activity android:name=".ChooseActivity" />
         <activity android:name=".ConfirmActivity" />
         <activity android:name=".DogActivity" />
