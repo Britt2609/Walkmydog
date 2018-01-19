@@ -1,14 +1,19 @@
 package com.example.britt.walkmydog;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,11 +32,11 @@ public class ConfirmActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
 
     String id;
+    String picture;
+    String dogNameText;
 
-
-    User mUser;
-
-
+    ImageView photo;
+    TextView dogName;
     Spinner spinner;
 
     @Override
@@ -46,35 +51,26 @@ public class ConfirmActivity extends AppCompatActivity {
                 android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+
+        Intent intent = getIntent();
+        picture = intent.getStringExtra("photo");
+        dogNameText = intent.getStringExtra("name");
+        dogName.setText(dogNameText);
+
+        photo = findViewById(R.id.photo);
+        getImage();
     }
 
-//    public void getFromDB() {
-//        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                mUser = dataSnapshot.child("dogs").child(id).child("dog").getValue("picture");
-//
-//                if (mUser.userType.equals("owner")) {
-//
-//                }
-//                else if (mUser.userType.equals("walker")){
-//                    Intent intent = new Intent(MainActivity.this, ChooseActivity.class);
-//                    startActivity(intent);
-//                    finish();
-//                }
-//                else {
-//                    Toast.makeText(MainActivity.this, "Type is fout!!!!",
-//                            Toast.LENGTH_SHORT).show();
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.w("value failure: ", "Failed to read value.");
-//            }
-//        });
-//    }
+    public void getImage() {
+        if (picture == null) {
+            Log.w("LOGO", "Logo is used");
+        }
+        else {
+            byte[] decodedString = Base64.decode(picture, Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            photo.setImageBitmap(decodedByte);
+        }
+    }
 
     /**
      * Give selected category to next activity and go to next activity.

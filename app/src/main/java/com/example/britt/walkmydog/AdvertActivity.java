@@ -83,8 +83,6 @@ public class AdvertActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_advert);
 
-        Log.d("TAGG", "hee hallo");
-
         // Set spinner to be able to choose category.
         spinner = findViewById(R.id.spinner3);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinner_advert,
@@ -104,7 +102,10 @@ public class AdvertActivity extends AppCompatActivity {
         }
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
-
+//
+//        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//        LocationListener ll = new mylocationlistener();
+//        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, ll);
     }
 
     /**
@@ -146,7 +147,6 @@ public class AdvertActivity extends AppCompatActivity {
 
                     Toast.makeText(this, "location permission granted", Toast.LENGTH_LONG).show();
                     getLocation();
-
                 } else {
 
                     Toast.makeText(this, "location permission denied", Toast.LENGTH_LONG).show();
@@ -197,9 +197,9 @@ public class AdvertActivity extends AppCompatActivity {
         picture = imageEncoded;
     }
 
-    public void getLocation()throws SecurityException {
+    public void getLocation() throws SecurityException {
 
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         // this listener checks what happens with the locationservice
         locationListener = new LocationListener() {
@@ -244,8 +244,29 @@ public class AdvertActivity extends AppCompatActivity {
     }
 
 
-    public void makeAdvert(View view) {
+//    private class mylocationlistener implements LocationListener {
+//        @Override
+//        public void onLocationChanged(Location location) {
+//            if (location != null) {
+//                Log.w("LOCATION CHANGED", location.getLatitude() + "");
+//                Log.w("LOCATION CHANGED", location.getLongitude() + "");
+//                tekst.setText(latitude + "   " + longitude);
+//            }
+//        }
+//        @Override
+//        public void onProviderDisabled(String provider) {
+//        }
+//        @Override
+//        public void onProviderEnabled(String provider) {
+//        }
+//        @Override
+//        public void onStatusChanged(String provider, int status, Bundle extras) {
+//        }
+//    }
 
+
+
+    public void makeAdvert(View view) {
 
         description = dog_description.getText().toString();
         dogName = dog_name.getText().toString();
@@ -264,7 +285,8 @@ public class AdvertActivity extends AppCompatActivity {
 
         Intent intent = new Intent(AdvertActivity.this, ConfirmActivity.class);
 //        intent.putExtra("photo", picture);
-//        intent.putExtra("dogName", dogName);
+        intent.putExtra("name", dogName);
+        intent.putExtra("photo", picture);
         startActivity(intent);
         finish();
     }
