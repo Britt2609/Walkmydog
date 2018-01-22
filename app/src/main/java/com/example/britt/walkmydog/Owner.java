@@ -5,6 +5,7 @@ package com.example.britt.walkmydog;
  */
 
 public class Owner {
+    public String type;
     public String name;
     public String email;
     public String dog;
@@ -12,7 +13,8 @@ public class Owner {
 
     public Owner() {}
 
-    public Owner(String name, String email, String dog, Boolean advert_status) {
+    public Owner(String type, String name, String email, String dog, Boolean advert_status) {
+        this.type = type;
         this.name = name;
         this.email = email;
         this.dog = dog;

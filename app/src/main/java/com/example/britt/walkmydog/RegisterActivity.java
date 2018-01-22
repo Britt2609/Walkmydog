@@ -19,6 +19,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -159,21 +162,8 @@ public class RegisterActivity extends AppCompatActivity {
         Log.w(TAG, "user id" + id);
 
         User aUser;
-        aUser = new User(type);
+        aUser = new User(type, name, email, false, null);
         databaseReference.child("users").child(id).setValue(aUser);
-
-
-        if (type.equals("owner")) {
-            Owner aOwner;
-            aOwner = new Owner(name, email,"dog",false);
-            databaseReference.child("types").child("owner").child(id).setValue(aOwner);
-        }
-        else {
-            Walker aWalker;
-            aWalker = new Walker(name, email);
-            databaseReference.child("types").child("walker").child(id).setValue(aWalker);
-        }
-
     }
 
     public void goBack(View view) {

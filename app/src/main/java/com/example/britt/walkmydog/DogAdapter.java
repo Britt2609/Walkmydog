@@ -3,8 +3,15 @@ package com.example.britt.walkmydog;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.ResourceCursorAdapter;
+import android.util.Base64;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,49 +21,54 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 
+import java.util.ArrayList;
+
+import static java.security.AccessController.getContext;
+
 /**
  * Created by britt on 11-1-2018.
  */
 
-public class DogAdapter extends ResourceCursorAdapter {
+public class DogAdapter extends ArrayAdapter {
 
-    Context c;
+    ImageView picture;
+    TextView name;
 
 
-    public DogAdapter(Context context, Cursor cursor) {
-        super(context, R.layout.dog_adapter, cursor, 0);
-        c = context;
+    public DogAdapter(Context context, ArrayList<Dog> dogArray) {
+        super(context, R.layout.dog_adapter, dogArray);
     }
 
+    @NonNull
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
-        final ImageView picture = view.findViewById(R.id.dogPicture);
-        TextView dish = view.findViewById(R.id.name);
-
-        RequestQueue queue =  Volley.newRequestQueue(c);
-
-        Integer index_item = cursor.getColumnIndex("name");
-        Integer index_url = cursor.getColumnIndex("image_url");
-
-        String value_name = cursor.getString(index_item);
-        String value_url = cursor.getString(index_url);
-
-        dish.setText(value_name);
-
-        ImageRequest imageRequest = new ImageRequest(value_url, new Response.Listener<Bitmap>() {
-            @Override
-            public void onResponse(Bitmap response) {
-                picture.setImageBitmap(response);
-            }
-        }, 0, 0, null, Bitmap.Config.ALPHA_8, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                String ImageNotFound = "Image not found!";
-                System.out.println(ImageNotFound);
-            }
+    public View getView(int position, View view, @NonNull ViewGroup parent) {
+        if (view == null) {
+            view = LayoutInflater.from(getContext()).inflate(R.layout.dog_adapter, parent, false);
         }
-        );
-        queue.add(imageRequest);
 
+        name = view.findViewById(R.id.dogName);
+        picture = view.findViewById(R.id.dogPicture);
+
+        Dog mDog = (Dog) getItem(position);
+
+        String dogPhoto = mDog.photo;
+        String dogName = mDog.name;
+
+        getImage(dogPhoto);
+
+        name.setText(dogName);
+
+        return view;
+    }
+
+    public void getImage(String photo) {
+        if (photo == null) {
+            Log.w("LOGO", "Logo is used");
+        }
+        else {
+            byte[] decodedString = Base64.decode(photo, Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            picture.setImageBitmap(decodedByte);
+        }
     }
 }

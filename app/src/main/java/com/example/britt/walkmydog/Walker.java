@@ -16,6 +16,6 @@ public class Walker {
     public Walker(String name, String email) {
         this.name = name;
         this.email = email;
-//        this.favorites = favoritetes;
+//        this.favorites = favorites;
     }
 }

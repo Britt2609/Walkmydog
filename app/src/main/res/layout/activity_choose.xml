@@ -33,27 +33,13 @@
         android:text="Go to option"
         android:textColor="#ffffff"
         android:textSize="10sp"
-        app:layout_constraintBottom_toTopOf="@+id/android:list"
+        app:layout_constraintBottom_toTopOf="@+id/dogList"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-    <Button
-        android:id="@+id/testButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="Testbutton"
-        android:onClick="goToNext"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/android:list" />
-
     <ListView
-        android:id="@+id/android:list"
+        android:id="@+id/dogList"
         android:layout_width="match_parent"
         android:layout_height="400sp"
         android:layout_marginBottom="56dp"

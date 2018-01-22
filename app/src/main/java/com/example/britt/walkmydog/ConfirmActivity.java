@@ -55,6 +55,7 @@ public class ConfirmActivity extends AppCompatActivity {
         Intent intent = getIntent();
         picture = intent.getStringExtra("photo");
         dogNameText = intent.getStringExtra("name");
+        dogName = findViewById(R.id.dogName);
         dogName.setText(dogNameText);
 
         photo = findViewById(R.id.photo);

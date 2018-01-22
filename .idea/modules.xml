@@ -3,8 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Walkmydog.iml" filepath="$PROJECT_DIR$/.idea/Walkmydog.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Walkmydog.iml" filepath="$PROJECT_DIR$/Walkmydog.iml" />
+      <module fileurl="file://C:\Users\Piet van Leeuwen\AndroidStudioProjects\Walkmydog\.idea\Walkmydog.iml" filepath="C:\Users\Piet van Leeuwen\AndroidStudioProjects\Walkmydog\.idea\Walkmydog.iml" />
+      <module fileurl="file://C:\Users\Piet van Leeuwen\AndroidStudioProjects\Walkmydog\Walkmydog.iml" filepath="C:\Users\Piet van Leeuwen\AndroidStudioProjects\Walkmydog\Walkmydog.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\Piet van Leeuwen\AndroidStudioProjects\Walkmydog\app\app.iml" filepath="C:\Users\Piet van Leeuwen\AndroidStudioProjects\Walkmydog\app\app.iml" />
     </modules>
   </component>
 </project>

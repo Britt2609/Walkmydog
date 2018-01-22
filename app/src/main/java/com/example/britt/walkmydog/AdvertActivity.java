@@ -31,6 +31,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -39,6 +44,9 @@ import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
 
 import static java.lang.Double.valueOf;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+
 
 public class AdvertActivity extends AppCompatActivity {
 
@@ -53,7 +61,6 @@ public class AdvertActivity extends AppCompatActivity {
     // Initialize for database.
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
-    private static final String TAG = "firebase";
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
@@ -78,6 +85,18 @@ public class AdvertActivity extends AppCompatActivity {
 
     Bitmap imageBitmap;
 
+    private static final String TAG = "MapActivity";
+
+//    private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
+//    private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
+//    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
+//    private static final float DEFAULT_ZOOM = 15f;
+
+    //vars
+    private Boolean mLocationPermissionsGranted = false;
+//    private GoogleMap mMap;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,12 +119,12 @@ public class AdvertActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(AdvertActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(AdvertActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, myLocationRequestCode);
         }
+        else {
+            mLocationPermissionsGranted = true;
+            getLocation();
+        }
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
-//
-//        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//        LocationListener ll = new mylocationlistener();
-//        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, ll);
     }
 
     /**
@@ -199,70 +218,35 @@ public class AdvertActivity extends AppCompatActivity {
 
     public void getLocation() throws SecurityException {
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Log.d(TAG, "getDeviceLocation: getting the devices current location");
 
-        // this listener checks what happens with the locationservice
-        locationListener = new LocationListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onLocationChanged(Location location) {
-                // this method is triggered when a user is detected in new location
-                Log.d("gps", "updated");
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-                // get coordinates of user
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
+        try{
+            if(mLocationPermissionsGranted){
 
-                tekst.setText(latitude + "   " + longitude);
+                final Task location = mFusedLocationProviderClient.getLastLocation();
+                location.addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if(task.isSuccessful()){
+                            Log.d(TAG, "onComplete: found location!");
+                            Location currentLocation = (Location) task.getResult();
 
+                            latitude = currentLocation.getLatitude();
+                            longitude = currentLocation.getLongitude();
+
+                        }else{
+                            Log.d(TAG, "onComplete: current location is null");
+                            Toast.makeText(AdvertActivity.this, "unable to get current location", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-                // necessity
-                Log.w("TAGG", " HELLOOOO");
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-                // necessity
-                Log.w("TAGG", " HOOOOOOOOI");
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-                Log.w("TAGG", " HAAI");
-
-
-                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-            }
-        };
-
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-
+        }catch (SecurityException e){
+            Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage() );
+        }
     }
-
-
-//    private class mylocationlistener implements LocationListener {
-//        @Override
-//        public void onLocationChanged(Location location) {
-//            if (location != null) {
-//                Log.w("LOCATION CHANGED", location.getLatitude() + "");
-//                Log.w("LOCATION CHANGED", location.getLongitude() + "");
-//                tekst.setText(latitude + "   " + longitude);
-//            }
-//        }
-//        @Override
-//        public void onProviderDisabled(String provider) {
-//        }
-//        @Override
-//        public void onProviderEnabled(String provider) {
-//        }
-//        @Override
-//        public void onStatusChanged(String provider, int status, Bundle extras) {
-//        }
-//    }
 
 
 
@@ -279,7 +263,7 @@ public class AdvertActivity extends AppCompatActivity {
 
         Log.w("NAMEE", dogName + " " + description);
 
-        databaseReference.child("types").child("owner").child(id).child("dog").setValue(aDog);
+        databaseReference.child("users").child(id).child("advert_status").setValue(true);
 
         databaseReference.child("dogs").child(id).child("dog").setValue(aDog);
 
