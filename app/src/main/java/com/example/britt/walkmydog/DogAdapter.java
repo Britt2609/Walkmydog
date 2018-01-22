@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -53,10 +54,19 @@ public class DogAdapter extends ArrayAdapter {
 
         String dogPhoto = mDog.photo;
         String dogName = mDog.name;
+        String id = mDog.id;
 
-        getImage(dogPhoto);
+        if (dogPhoto == null) {
+            Log.d("LOGO", "Logo is used");
+        }
+
+        else {
+            getImage(dogPhoto);
+        }
 
         name.setText(dogName);
+        Log.w("TAGG", id);
+        picture.setTag(id);
 
         return view;
     }

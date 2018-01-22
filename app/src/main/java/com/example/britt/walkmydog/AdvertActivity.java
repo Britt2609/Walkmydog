@@ -120,6 +120,7 @@ public class AdvertActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(AdvertActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, myLocationRequestCode);
         }
         else {
+            Log.d("TAGG", "LOCATIEEEE");
             mLocationPermissionsGranted = true;
             getLocation();
         }
@@ -216,7 +217,7 @@ public class AdvertActivity extends AppCompatActivity {
         picture = imageEncoded;
     }
 
-    public void getLocation() throws SecurityException {
+    public void getLocation() {
 
         Log.d(TAG, "getDeviceLocation: getting the devices current location");
 
@@ -230,7 +231,6 @@ public class AdvertActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task task) {
                         if(task.isSuccessful()){
-                            Log.d(TAG, "onComplete: found location!");
                             Location currentLocation = (Location) task.getResult();
 
                             latitude = currentLocation.getLatitude();
@@ -259,7 +259,7 @@ public class AdvertActivity extends AppCompatActivity {
         id = mAuth.getCurrentUser().getUid();
         Log.w("userid", id);
         Dog aDog;
-        aDog = new Dog(dogName, description, picture, latitude, longitude);
+        aDog = new Dog(dogName, description, picture, latitude, longitude, id);
 
         Log.w("NAMEE", dogName + " " + description);
 

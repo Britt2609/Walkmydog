@@ -48,6 +48,8 @@ public class ChooseActivity extends AppCompatActivity {
 
     ArrayList<Dog> dogArray = new ArrayList<Dog>();
 
+    DogAdapter mAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +67,17 @@ public class ChooseActivity extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         getFromDB();
+
+//        dogList.setOnItemClickListener(new OnItemClickListener());
+
+//        dogList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+//        {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view,
+//                                    int position, long id) {
+//                Toast.makeText(ChooseActivity.this, listItemsValue[position], Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 
     /**
@@ -106,7 +119,7 @@ public class ChooseActivity extends AppCompatActivity {
                     dogArray.add(mDog);
 
                 }
-                DogAdapter mAdapter = new DogAdapter(ChooseActivity.this, dogArray);
+                mAdapter = new DogAdapter(ChooseActivity.this, dogArray);
                 dogList.setAdapter(mAdapter);
             }
 
@@ -118,4 +131,15 @@ public class ChooseActivity extends AppCompatActivity {
 
         databaseReference.addValueEventListener(eventListener);
     }
+
+//    private class OnItemClickListener implements AdapterView.OnItemClickListener {
+//        @Override
+//        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//            ItemClicked item = mAdapter.getItemAtPosition(position);
+//
+//            Intent intent = new Intent(ChooseActivity.this, DogActivity.class);
+//            //based on item add info to intent
+//            startActivity(intent);
+//        }
+//    }
 }

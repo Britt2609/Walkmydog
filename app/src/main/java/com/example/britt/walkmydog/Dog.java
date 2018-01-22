@@ -12,14 +12,16 @@ public class Dog {
     public String photo;
     public Double lat;
     public Double lon;
+    public String id;
 
     public Dog() {}
 
-    public Dog(String name, String description, String photo, Double lat, Double lon) {
+    public Dog(String name, String description, String photo, Double lat, Double lon, String id) {
         this.name = name;
         this.description = description;
         this.photo = photo;
         this.lat = lat;
         this.lon = lon;
+        this.id = id;
     }
 }
