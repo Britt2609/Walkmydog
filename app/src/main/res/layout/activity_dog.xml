@@ -42,27 +42,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-    <Button
-        android:id="@+id/testButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:onClick="goToNext"
-        android:text="Test Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
-        android:layout_height="368dp"
+        android:layout_height="360sp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -77,8 +60,15 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/dog_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="name"
+                android:textSize="24sp" />
+
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/photo"
                 android:layout_width="match_parent"
                 android:layout_height="223dp"
                 app:srcCompat="@drawable/logo"
@@ -86,16 +76,26 @@
                 tools:layout_editor_absoluteY="67dp" />
 
             <TextView
-                android:id="@+id/textView9"
+                android:id="@+id/description"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40sp"
                 android:text="Omschrijving"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                tools:text="name" />
+
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="300sp"
+                android:layout_height="150sp"
+                tools:context="com.example.britt.walkmydog.DogActivity" />
         </LinearLayout>
+
     </ScrollView>
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/appointment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -103,6 +103,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="Afspraak maken"
+        android:onClick="makeAppointment"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

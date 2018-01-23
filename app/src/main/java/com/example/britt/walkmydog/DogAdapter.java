@@ -65,7 +65,6 @@ public class DogAdapter extends ArrayAdapter {
         }
 
         name.setText(dogName);
-        Log.w("TAGG", id);
         picture.setTag(id);
 
         return view;

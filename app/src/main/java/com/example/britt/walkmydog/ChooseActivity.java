@@ -35,16 +35,7 @@ public class ChooseActivity extends AppCompatActivity {
 
     ListView dogList;
 
-
-    Dog mDog;
-
-    // Initialize for database.
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener authStateListener;
-    private static final String TAG = "firebase";
-
     private DatabaseReference databaseReference;
-
 
     ArrayList<Dog> dogArray = new ArrayList<Dog>();
 
@@ -68,9 +59,7 @@ public class ChooseActivity extends AppCompatActivity {
 
         getFromDB();
 
-//        dogList.setOnItemClickListener(new OnItemClickListener());
-
-//        dogList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        dogList.setOnItemClickListener(new OnItemClickListener());
 //        {
 //            @Override
 //            public void onItemClick(AdapterView<?> parent, View view,
@@ -132,14 +121,17 @@ public class ChooseActivity extends AppCompatActivity {
         databaseReference.addValueEventListener(eventListener);
     }
 
-//    private class OnItemClickListener implements AdapterView.OnItemClickListener {
-//        @Override
-//        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//            ItemClicked item = mAdapter.getItemAtPosition(position);
-//
-//            Intent intent = new Intent(ChooseActivity.this, DogActivity.class);
-//            //based on item add info to intent
-//            startActivity(intent);
-//        }
-//    }
+    private class OnItemClickListener implements AdapterView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Dog dog = (Dog) parent.getItemAtPosition(position);
+
+            String bossID = dog.getId();
+            Log.w("TAGG", "hoi " + bossID);
+
+            Intent intent = new Intent(ChooseActivity.this, DogActivity.class);
+            intent.putExtra("bossID", bossID);
+            startActivity(intent);
+        }
+    }
 }

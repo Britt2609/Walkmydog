@@ -4,6 +4,7 @@ import android.*;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -18,6 +19,7 @@ import android.provider.SyncStateContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -118,8 +120,12 @@ public class AdvertActivity extends AppCompatActivity {
 
         if (ActivityCompat.checkSelfPermission(AdvertActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(AdvertActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, myLocationRequestCode);
+            showSettingAlert();
         }
         else {
+            if (boolLocation) {
+                showSettingAlert();
+            }
             Log.d("TAGG", "LOCATIEEEE");
             mLocationPermissionsGranted = true;
             getLocation();
@@ -233,8 +239,10 @@ public class AdvertActivity extends AppCompatActivity {
                         if(task.isSuccessful()){
                             Location currentLocation = (Location) task.getResult();
 
-                            latitude = currentLocation.getLatitude();
-                            longitude = currentLocation.getLongitude();
+                            if (!(task.getResult() == null)) {
+                                latitude = currentLocation.getLatitude();
+                                longitude = currentLocation.getLongitude();
+                            }
 
                         }else{
                             Log.d(TAG, "onComplete: current location is null");
@@ -248,7 +256,29 @@ public class AdvertActivity extends AppCompatActivity {
         }
     }
 
-
+    public void showSettingAlert()
+    {
+        String locationProviders = Settings.Secure.getString(getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+        if (locationProviders == null || locationProviders.equals("")) {
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+            alertDialog.setTitle("GPS setting!");
+            alertDialog.setMessage("GPS is not enabled, Do you want to go to settings menu? ");
+            alertDialog.setPositiveButton("Setting", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    AdvertActivity.this.startActivity(intent);
+                }
+            });
+            alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            alertDialog.show();
+        }
+    }
 
     public void makeAdvert(View view) {
 
