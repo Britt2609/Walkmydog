@@ -50,8 +50,8 @@ public class ContactActivity extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         Intent intent = getIntent();
-        bossID = intent.getStringExtra(bossID);
-        dog = intent.getStringExtra(dog);
+        bossID = intent.getStringExtra("bossID");
+        dog = intent.getStringExtra("dog");
 
         getFromDB();
     }

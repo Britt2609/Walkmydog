@@ -24,6 +24,7 @@ import com.android.volley.toolbox.Volley;
 
 import java.util.ArrayList;
 
+import static com.example.britt.walkmydog.DogActivity.getImage;
 import static java.security.AccessController.getContext;
 
 /**
@@ -61,7 +62,7 @@ public class DogAdapter extends ArrayAdapter {
         }
 
         else {
-            getImage(dogPhoto);
+            getImage(dogPhoto, picture);
         }
 
         name.setText(dogName);
@@ -70,14 +71,14 @@ public class DogAdapter extends ArrayAdapter {
         return view;
     }
 
-    public void getImage(String photo) {
-        if (photo == null) {
-            Log.w("LOGO", "Logo is used");
-        }
-        else {
-            byte[] decodedString = Base64.decode(photo, Base64.DEFAULT);
-            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            picture.setImageBitmap(decodedByte);
-        }
-    }
+//    public void getImage(String photo) {
+//        if (photo == null) {
+//            Log.w("LOGO", "Logo is used");
+//        }
+//        else {
+//            byte[] decodedString = Base64.decode(photo, Base64.DEFAULT);
+//            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+//            picture.setImageBitmap(decodedByte);
+//        }
+//    }
 }

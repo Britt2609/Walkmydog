@@ -298,7 +298,6 @@ public class AdvertActivity extends AppCompatActivity {
         databaseReference.child("dogs").child(id).child("dog").setValue(aDog);
 
         Intent intent = new Intent(AdvertActivity.this, ConfirmActivity.class);
-//        intent.putExtra("photo", picture);
         intent.putExtra("name", dogName);
         intent.putExtra("photo", picture);
         startActivity(intent);

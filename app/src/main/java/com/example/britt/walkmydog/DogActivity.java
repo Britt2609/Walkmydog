@@ -34,6 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class DogActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -48,23 +49,31 @@ public class DogActivity extends AppCompatActivity implements OnMapReadyCallback
     Double lat;
     Double lon;
     String dog;
+    String id;
 
     TextView nameText;
     TextView descriptionText;
     ImageView picture;
 
     Dog mDog;
+    User mUser;
 
     LatLng location;
 
     private DatabaseReference databaseReference;
 
+    private FirebaseAuth mAuth;
+
+    private static final float DEFAULT_ZOOM = 15f;
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         location = new LatLng(lat, lon);
         googleMap.addMarker(new MarkerOptions().position(location)
-                .title("Marker in Sydney"));
+                .title("Marker of position of the dog's boss"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+        moveCamera(new LatLng(lat, lon),
+                DEFAULT_ZOOM);
     }
 
     @Override
@@ -74,6 +83,8 @@ public class DogActivity extends AppCompatActivity implements OnMapReadyCallback
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
+        mAuth = FirebaseAuth.getInstance();
+        id = mAuth.getCurrentUser().getUid();
 
         // Set spinner to be able to choose category.
         spinner = findViewById(R.id.spinner6);
@@ -123,7 +134,7 @@ public class DogActivity extends AppCompatActivity implements OnMapReadyCallback
                 dog = mDog.name;
                 nameText.setText(dog);
                 descriptionText.setText(mDog.description);
-                getImage(mDog.photo);
+                getImage(mDog.photo, picture);
                 lat = mDog.lat;
                 lon = mDog.lon;
 
@@ -134,17 +145,43 @@ public class DogActivity extends AppCompatActivity implements OnMapReadyCallback
                 Log.w("value failure: ", "Failed to read value.");
             }
         });
+    }
 
-        // Get the SupportMapFragment and request notification
-        // when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+    public void setFavorites() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mUser = dataSnapshot.child("users").child(id).getValue(User.class);
+
+                ArrayList<Dog> favo;
+                favo = mUser.favorites;
+
+
+                if (favo != null) {
+                    if (!favo.contains(mDog)) {
+                        favo.add(mDog);
+                    }
+                }
+
+                else {
+                    Log.d("else array", mDog.getName());
+                    favo = new ArrayList<>();
+                    favo.add(mDog);
+                }
+                Log.d("arraylist", favo.toString());
+                databaseReference.child("users").child(id).child("favorites").setValue(favo);
+        }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("value failure: ", "Failed to read value.");
+            }
+        });
     }
 
 
 
-    public void getImage(String photo) {
+    static void getImage(String photo, ImageView picture) {
         if (photo == null) {
             Log.w("LOGO", "Logo is used");
         }
@@ -157,8 +194,15 @@ public class DogActivity extends AppCompatActivity implements OnMapReadyCallback
 
     public void makeAppointment(View view) {
         Intent intent = new Intent (DogActivity.this, ContactActivity.class);
+        setFavorites();
         intent.putExtra("bossID", bossID);
         intent.putExtra("dog", dog);
         startActivity(intent);
     }
+
+    private void moveCamera(LatLng latLng, float zoom){
+        Log.d("TAGG", "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+    }
+
 }

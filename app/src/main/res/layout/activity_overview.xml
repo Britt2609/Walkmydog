@@ -49,7 +49,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="52dp"
         android:fontFamily="cursive"
         android:text="Uitgelaten honden"
         android:textSize="30sp"
@@ -60,7 +60,7 @@
         app:layout_constraintVertical_bias="0.911" />
 
     <ListView
-        android:id="@+id/android:list"
+        android:id="@+id/dogList"
         android:layout_width="match_parent"
         android:layout_height="400sp"
         android:layout_marginBottom="8dp"

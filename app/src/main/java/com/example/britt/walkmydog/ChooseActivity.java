@@ -60,13 +60,6 @@ public class ChooseActivity extends AppCompatActivity {
         getFromDB();
 
         dogList.setOnItemClickListener(new OnItemClickListener());
-//        {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view,
-//                                    int position, long id) {
-//                Toast.makeText(ChooseActivity.this, listItemsValue[position], Toast.LENGTH_SHORT).show();
-//            }
-//        });
     }
 
     /**
@@ -86,11 +79,6 @@ public class ChooseActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-    }
-
-    public void goToNext(View view) {
-        Intent intent = new Intent(ChooseActivity.this, DogActivity.class);
-        startActivity(intent);
     }
 
     public void getFromDB() {

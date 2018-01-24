@@ -72,4 +72,26 @@ public class Dog {
     public void setId(String id) {
         this.id = id;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean retVal = false;
+
+        if (obj instanceof Dog){
+            Dog ptr = (Dog) obj;
+
+            // compare IDs of the owner
+            retVal = ptr.id.equals(this.id);
+        }
+
+        return retVal;
+    }
+
+    /* https://stackoverflow.com/questions/8322129/arraylists-custom-contains-method */
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 17 * hash + (this.id != null ? this.id.hashCode() : 0);
+        return hash;
+    }
 }

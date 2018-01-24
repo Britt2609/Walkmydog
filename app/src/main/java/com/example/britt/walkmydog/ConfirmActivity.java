@@ -22,16 +22,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import static com.example.britt.walkmydog.DogActivity.getImage;
+
 public class ConfirmActivity extends AppCompatActivity {
 
-    // Initialize for database.
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener authStateListener;
-    private static final String TAG = "firebase";
-
-    private DatabaseReference databaseReference;
-
-    String id;
     String picture;
     String dogNameText;
 
@@ -59,19 +53,19 @@ public class ConfirmActivity extends AppCompatActivity {
         dogName.setText(dogNameText);
 
         photo = findViewById(R.id.photo);
-        getImage();
+        getImage(picture, photo);
     }
 
-    public void getImage() {
-        if (picture == null) {
-            Log.w("LOGO", "Logo is used");
-        }
-        else {
-            byte[] decodedString = Base64.decode(picture, Base64.DEFAULT);
-            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            photo.setImageBitmap(decodedByte);
-        }
-    }
+//    public void getImage() {
+//        if (picture == null) {
+//            Log.w("LOGO", "Logo is used");
+//        }
+//        else {
+//            byte[] decodedString = Base64.decode(picture, Base64.DEFAULT);
+//            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+//            photo.setImageBitmap(decodedByte);
+//        }
+//    }
 
     /**
      * Give selected category to next activity and go to next activity.
