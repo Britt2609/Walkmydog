@@ -10,6 +10,7 @@ public class User {
     public String userType;
     public String name;
     public String email;
+    // TODO: advert_status nog weghalen!!!!!!!!!!!!!!!!
     public Boolean advert_status;
     public ArrayList<Dog> favorites;
 

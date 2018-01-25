@@ -26,19 +26,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // Initialize for database.
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
-    private static final String TAG = "firebase";
-
     private DatabaseReference databaseReference;
+
+    // Set tag for logs.
+    private static final String TAG = "firebase";
 
     // Initialize user data.
     String email;
     String password;
     String id;
-
     String type;
 
+    // Initialize layout.
     Button login;
-    Button useremail;
+    Button user_email;
 
     User mUser;
 
@@ -50,67 +51,149 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Set listeners on buttons for logging in and go to creating an account.
         login = findViewById(R.id.login);
         login.setOnClickListener(this);
-        useremail = findViewById(R.id.make_account);
-        useremail.setOnClickListener(this);
+        user_email = findViewById(R.id.make_account);
+        user_email.setOnClickListener(this);
 
         // Set AuthStateListener to make sure only logged in users can go to next activity.
         mAuth = FirebaseAuth.getInstance();
-
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        authStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-
-                if (user != null) {
-                    Log.d(TAG, "onAuthStateChanged:signedIn" + user.getUid());
-                    Intent intent = new Intent(MainActivity.this, ChooseActivity.class);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    Log.d(TAG, "onAuthStateChanged:signedIn");
-                }
-            }
-        };
-
-        authStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-
-                if (user != null) {
-                    Log.d(TAG, "onAuthStateChanged:signedIn" + user.getUid());
-                    Intent intent = new Intent(MainActivity.this, AdvertActivity.class);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    Log.d(TAG, "onAuthStateChanged:signedIn");
-                }
-            }
-        };
+        // TODO: Zijn deze authstate listeners nodig???????
+//        authStateListener = new FirebaseAuth.AuthStateListener() {
+//            @Override
+//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//                FirebaseUser user = firebaseAuth.getCurrentUser();
+//
+//                if (user != null) {
+//                    Log.d(TAG, "onAuthStateChanged:signedIn" + user.getUid());
+//                    Intent intent = new Intent(MainActivity.this, ChooseActivity.class);
+//                    startActivity(intent);
+//                    finish();
+//                } else {
+//                    Log.d(TAG, "onAuthStateChanged:signedIn");
+//                }
+//            }
+//        };
+//
+//        authStateListener = new FirebaseAuth.AuthStateListener() {
+//            @Override
+//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//                FirebaseUser user = firebaseAuth.getCurrentUser();
+//
+//                if (user != null) {
+//                    Log.d(TAG, "onAuthStateChanged:signedIn" + user.getUid());
+//                    Intent intent = new Intent(MainActivity.this, AdvertActivity.class);
+//                    startActivity(intent);
+//                    finish();
+//                } else {
+//                    Log.d(TAG, "onAuthStateChanged:signedIn");
+//                }
+//            }
+//        };
     }
-    public void getFromDB() {
+
+
+    /**
+     * Log in or go to next activity to create account.
+     */
+    public void onClick(View v) {
+
+        // Set onClick to be able to log in or create an account.
+        switch (v.getId()) {
+            case R.id.login:
+                logIn();
+                break;
+
+            case R.id.make_account:
+
+                // Go to next activity to register.
+                Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+        }
+    }
+
+
+    /**
+     * Logs in user with email and password.
+     */
+    public void logIn() {
+
+        // Get input of user.
+        EditText get_email = findViewById(R.id.getEmail);
+        EditText get_password = findViewById(R.id.getPassword);
+
+        email = get_email.getText().toString();
+        password = get_password.getText().toString();
+
+        // Check if email and password are filled in.
+        if (email.equals("") || password.equals("")) {
+            Toast.makeText(MainActivity.this, "Vul aub alle velden in!",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        else {
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+
+                                // Sign in success, update UI with the signed-in user's information and go to next activity.
+                                Log.d(TAG, "signInWithEmail:success");
+
+                                // Get current user id.
+                                mAuth = FirebaseAuth.getInstance();
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                id = user.getUid();
+
+                                // Get type from database and sent user to next activity.
+                                sentToNext();
+
+
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                Toast.makeText(MainActivity.this, "Email/wachtwoord klopt niet!",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+
+                            // ...
+                        }
+                    });
+        }
+    }
+
+    /**
+     * Get user data from database and sent user to next corresponding activity
+     */
+    public void sentToNext() {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mUser = dataSnapshot.child("users").child(id).getValue(User.class);
+                type = mUser.userType;
 
-                if (mUser.userType.equals("owner")) {
+                // Check which type the current user is and go to corresponding next activity.
+                if (type.equals("owner")) {
+                    // Sent owner to activity to make an advert.
                     Intent intent = new Intent(MainActivity.this, AdvertActivity.class);
                     startActivity(intent);
                     finish();
                 }
-                else if (mUser.userType.equals("walker")){
+
+                else if (type.equals("walker")){
+                    // Sent walker to activity with an overview of adverts.
                     Intent intent = new Intent(MainActivity.this, ChooseActivity.class);
                     startActivity(intent);
                     finish();
                 }
+
                 else {
                     Toast.makeText(MainActivity.this, "Type is fout!!!!",
                             Toast.LENGTH_SHORT).show();
                 }
-
             }
 
             @Override
@@ -121,72 +204,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-
-    /**
-     * Logs in user with email and password.
-     */
-    public void logIn() {
-
-        EditText get_email = findViewById(R.id.getEmail);
-        EditText get_password = findViewById(R.id.getPassword);
-
-        email = get_email.getText().toString();
-        password = get_password.getText().toString();
-
-        // Check if email and password are filled in.
-        if (email.equals("")) {
-            Toast.makeText(MainActivity.this, "Vul aub een emailadres in!",
-                    Toast.LENGTH_SHORT).show();
-        }
-
-        else if (password.equals("")) {
-            Toast.makeText(MainActivity.this, "Vul aub een wachtwoord in!",
-                    Toast.LENGTH_SHORT).show();
-        }
-
-        else {
-            mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information and go to next activity.
-                                Log.d(TAG, "signInWithEmail:success");
-
-                                mAuth = FirebaseAuth.getInstance();
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                Log.w("USERR", "User " + user);
-                                id = user.getUid();
-
-
-                                getFromDB();
-
-
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                Toast.makeText(MainActivity.this, "Email en wachtwoord kloppen niet!",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-
-                            // ...
-                        }
-                    });
-        }
-    }
-
-    public void onClick(View v) {
-        // Set onClick to be able to log in or create an account.
-        switch (v.getId()) {
-            case R.id.login:
-                logIn();
-                break;
-
-            case R.id.make_account:
-                Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-        }
-    }
+    // TODO:is dit nodig?
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        mAuth.addAuthStateListener(authStateListener);
+//    }
 }

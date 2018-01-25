@@ -52,52 +52,40 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 
 public class AdvertActivity extends AppCompatActivity {
 
-    Spinner spinner;
-    String dogName;
+    // Initialize dog data.
+    String dog_name;
     String description;
     String id;
-    String picture;
+    String encoded_picture;
 
-    ImageView photo;
+    // Initialize for layout.
+    ImageView get_picture;
+    Spinner spinner;
+    TextView get_text;
+    EditText get_dog_name;
+    EditText get_description;
 
     // Initialize for database.
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener authStateListener;
-
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-
-    int myCameraRequestCode = 100;
-    int myLocationRequestCode = 100;
-
     private DatabaseReference databaseReference;
 
-    double longitude = 0.0000 ;
-    double latitude = 0.0000 ;
-
+    // Set values for use of camera.
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    int myCameraRequestCode = 100;
     Boolean boolCamera = false;
-    Boolean boolLocation = true;
-
-    TextView tekst;
-
-    private LocationListener locationListener;
-    private LocationManager locationManager;
-
-    EditText dog_name;
-    EditText dog_description;
-
     Bitmap imageBitmap;
 
+    // Set values for use of location.
+    private Boolean mLocationPermissionsGranted = false;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    int myLocationRequestCode = 100;
+    double longitude = 0.0000 ;
+    double latitude = 0.0000 ;
+    Boolean boolLocation = true;
+
+    // Set tag for logs.
     private static final String TAG = "MapActivity";
 
-//    private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
-//    private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
-//    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
-//    private static final float DEFAULT_ZOOM = 15f;
-
-    //vars
-    private Boolean mLocationPermissionsGranted = false;
-//    private GoogleMap mMap;
-    private FusedLocationProviderClient mFusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,35 +99,42 @@ public class AdvertActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        dog_name = findViewById(R.id.dogName);
-        dog_description = findViewById(R.id.description);
+        // Get layout views.
+        get_dog_name = findViewById(R.id.dog_name);
+        get_description = findViewById(R.id.description);
+        get_picture = findViewById(R.id.picture);
+        get_text = findViewById(R.id.use_logo);
 
-        photo = findViewById(R.id.Photo);
-
-        tekst = findViewById(R.id.useLogo);
-
+        // If not already given, ask for permission to use location.
+        // If not already turned on, ask user to turn on location.
         if (ActivityCompat.checkSelfPermission(AdvertActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(AdvertActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, myLocationRequestCode);
             showSettingAlert();
         }
+
         else {
+
             if (boolLocation) {
                 showSettingAlert();
             }
-            Log.d("TAGG", "LOCATIEEEE");
             mLocationPermissionsGranted = true;
             getLocation();
         }
 
+        // Get database.
         databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
+
     /**
-     * Give selected category to next activity and go to next activity.
+     * Go to selected option in spinner.
      */
     public void SelectOption(View view) {
+        // Log out when button is clicked.
         String option = spinner.getSelectedItem().toString();
+
         if (option.equals("Log Out")) {
+            // Sign out in firebase.
             FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(AdvertActivity.this, MainActivity.class);
             startActivity(intent);
@@ -147,12 +142,16 @@ public class AdvertActivity extends AppCompatActivity {
         }
     }
 
-    public void makePicture(View view) {
-        // Here, thisActivity is the current activity
 
+    /**
+     * User is able to take a picture of the dog.
+     */
+    public void makePicture(View view) {
+        // Set booleans for onRequestPermissionResult.
         boolCamera = true;
         boolLocation = false;
 
+        // If not already given, ask for permission to use camera.
         if (ActivityCompat.checkSelfPermission(AdvertActivity.this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(AdvertActivity.this, new String[]{android.Manifest.permission.CAMERA}, myCameraRequestCode);
         }
@@ -161,44 +160,47 @@ public class AdvertActivity extends AppCompatActivity {
         }
     }
 
+
+    /**
+     * Gets information/result out of location or camera request.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
+        // Check if result is asked of location or camera.
         if (boolLocation) {
+
+            // If permission granted and location determined, get current location of user.
             if (requestCode == myLocationRequestCode) {
-
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
                     Toast.makeText(this, "location permission granted", Toast.LENGTH_LONG).show();
                     getLocation();
+
                 } else {
-
                     Toast.makeText(this, "location permission denied", Toast.LENGTH_LONG).show();
-
                 }
             }
         }
 
         if (boolCamera) {
+            // If permission granted, go to camera.
             if (requestCode == myCameraRequestCode) {
-
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
                     Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
                     dispatchTakePictureIntent();
 
                 } else {
-
                     Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
-
                 }
             }
         }
     }
 
 
+    /**
+     * Go to camera and take picture.
+     */
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -206,23 +208,37 @@ public class AdvertActivity extends AppCompatActivity {
         }
     }
 
+
+    /**
+     * Get image taken by camera.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             imageBitmap = (Bitmap) extras.get("data");
-            photo.setImageBitmap(imageBitmap);
-            encodeBitmapAndSaveToFirebase(imageBitmap);
+
+            // Show image in current activity.
+            get_picture.setImageBitmap(imageBitmap);
+
+            // Encode the picture and save the picture to firebase.
+            encodeBitmap(imageBitmap);
         }
     }
 
-    public void encodeBitmapAndSaveToFirebase(Bitmap bitmap) {
+    /**
+     * Encode picture to a string.
+     */
+    public void encodeBitmap(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+
+        // Use base64 to encode the picture.
         String imageEncoded = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
-        picture = imageEncoded;
+        encoded_picture = imageEncoded;
     }
 
+    // TODO: comment vanaf hier verder.
     public void getLocation() {
 
         Log.d(TAG, "getDeviceLocation: getting the devices current location");
@@ -282,24 +298,24 @@ public class AdvertActivity extends AppCompatActivity {
 
     public void makeAdvert(View view) {
 
-        description = dog_description.getText().toString();
-        dogName = dog_name.getText().toString();
+        description = get_description.getText().toString();
+        dog_name = get_dog_name.getText().toString();
 
         mAuth = FirebaseAuth.getInstance();
         id = mAuth.getCurrentUser().getUid();
         Log.w("userid", id);
         Dog aDog;
-        aDog = new Dog(dogName, description, picture, latitude, longitude, id);
+        aDog = new Dog(dog_name, description, encoded_picture, latitude, longitude, id);
 
-        Log.w("NAMEE", dogName + " " + description);
+        Log.w("NAMEE", dog_name + " " + description);
 
         databaseReference.child("users").child(id).child("advert_status").setValue(true);
 
         databaseReference.child("dogs").child(id).child("dog").setValue(aDog);
 
         Intent intent = new Intent(AdvertActivity.this, ConfirmActivity.class);
-        intent.putExtra("name", dogName);
-        intent.putExtra("photo", picture);
+        intent.putExtra("name", dog_name);
+        intent.putExtra("photo", encoded_picture);
         startActivity(intent);
         finish();
     }

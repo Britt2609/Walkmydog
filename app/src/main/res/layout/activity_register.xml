@@ -8,7 +8,7 @@
     tools:context="com.example.britt.walkmydog.RegisterActivity">
 
     <Button
-        android:id="@+id/goBack"
+        android:id="@+id/go_back"
         android:layout_width="71dp"
         android:layout_height="37dp"
         android:layout_marginBottom="8dp"
@@ -19,7 +19,7 @@
         android:onClick="goBack"
         android:text="terug"
         android:textColor="#ffffff"
-        app:layout_constraintBottom_toTopOf="@+id/getName"
+        app:layout_constraintBottom_toTopOf="@+id/get_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.026"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,7 +27,7 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <EditText
-        android:id="@+id/getName"
+        android:id="@+id/get_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -37,14 +37,14 @@
         android:ems="10"
         android:hint="name user"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/getEmail"
+        app:layout_constraintBottom_toTopOf="@+id/get_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
     <EditText
-        android:id="@+id/getEmail"
+        android:id="@+id/get_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -58,7 +58,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/getPassword"
+        android:id="@+id/get_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -68,15 +68,15 @@
         android:ems="10"
         android:hint="password"
         android:inputType="textPersonName|textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/getPassword2"
+        app:layout_constraintBottom_toTopOf="@+id/get_password2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/getEmail"
+        app:layout_constraintTop_toBottomOf="@+id/get_email"
         app:layout_constraintVertical_bias="0.0" />
 
     <EditText
-        android:id="@+id/getPassword2"
+        android:id="@+id/get_password2"
         android:layout_width="wrap_content"
         android:layout_height="49dp"
         android:layout_marginBottom="8dp"
@@ -86,15 +86,15 @@
         android:ems="10"
         android:hint="password"
         android:inputType="textPersonName|textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/textView4"
+        app:layout_constraintBottom_toTopOf="@+id/password_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/getPassword"
+        app:layout_constraintTop_toBottomOf="@+id/get_password"
         app:layout_constraintVertical_bias="0.008" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/password_text"
         android:layout_width="204dp"
         android:layout_height="34dp"
         android:layout_marginStart="88dp"
@@ -102,7 +102,7 @@
         android:textSize="12dp"
         app:layout_constraintBottom_toTopOf="@+id/radioGroup"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/getPassword2" />
+        app:layout_constraintTop_toBottomOf="@id/get_password2" />
 
     <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/radioGroup"
@@ -117,7 +117,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4">
+        app:layout_constraintTop_toBottomOf="@+id/password_text">
 
         <RadioButton
             android:id="@+id/owner"

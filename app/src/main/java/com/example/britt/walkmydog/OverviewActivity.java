@@ -71,35 +71,30 @@ public class OverviewActivity extends AppCompatActivity {
 
         dogList.setOnItemClickListener(new OnItemClickListener());
 
-        dogList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(final AdapterView<?> adapterView, View view, int i, long l) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(OverviewActivity.this);
-                builder.setMessage("Wilt u deze advertentie verwijderen uit uw lijst?").setTitle("Advertentie verwijderen");
-                builder.setPositiveButton("Verwijderen", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int i) {
-                        deleteFavorite();
-                        dialog.cancel();
-                    }
-                });
-                builder.setNeutralButton("Annuleren", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-
-                return true;
-            }
-        });
-    }
-
-    public void deleteFavorite(int i) {
-
-        getFavoritesFromDB(i);
-
-        Toast.makeText(OverviewActivity.this, " deleted from your list!", Toast.LENGTH_LONG).show();
+//        dogList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(final AdapterView<?> adapterView, View view, int i, long l) {
+//                AlertDialog.Builder builder = new AlertDialog.Builder(OverviewActivity.this);
+//                builder.setMessage("Wilt u deze advertentie verwijderen uit uw lijst?").setTitle("Advertentie verwijderen");
+//                builder.setPositiveButton("Verwijderen", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int i) {
+//                        Log.w("taggs", "" + i);
+//                        getFavoritesFromDB(i);
+//                        Toast.makeText(OverviewActivity.this, " deleted from your list!", Toast.LENGTH_LONG).show();
+//                        dialog.cancel();
+//                    }
+//                });
+//                builder.setNeutralButton("Annuleren", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        dialog.cancel();
+//                    }
+//                });
+//                AlertDialog dialog = builder.create();
+//                dialog.show();
+//
+//                return true;
+//            }
+//        });
     }
 
     public void SelectOption(View view) {
@@ -161,28 +156,30 @@ public class OverviewActivity extends AppCompatActivity {
         }
     }
 
-    public void getFavoritesFromDB(final int i) {
-
-        ValueEventListener eventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-               User user = dataSnapshot.child("users").child(id).getValue(User.class);
-               ArrayList<Dog> doggies = user.favorites;
-               doggies.remove(i);
-               user.favorites = doggies;
-               dogArray = doggies;
-               databaseReference.child("users").child(id).setValue(user);
-
-               mAdapter = new DogAdapter(OverviewActivity.this, dogArray);
-               dogList.setAdapter(mAdapter);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-        databaseReference.addValueEventListener(eventListener);
-    }
+//    public void getFavoritesFromDB(int i) {
+//
+//        ValueEventListener eventListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//               User user = dataSnapshot.child("users").child(id).getValue(User.class);
+//               Log.w("taggg", "" + id);
+//               ArrayList<Dog> doggies = user.favorites;
+//               Log.w("TAGGG", "" + i);
+//               doggies.remove(i);
+//               user.favorites = doggies;
+//               dogArray = doggies;
+//               databaseReference.child("users").child(id).setValue(user);
+//
+//               mAdapter = new DogAdapter(OverviewActivity.this, dogArray);
+//               dogList.setAdapter(mAdapter);
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        };
+//        databaseReference.addValueEventListener(eventListener);
+//    }
 }
 

@@ -29,9 +29,11 @@ public class RegisterActivity extends AppCompatActivity {
     // Initialize for database.
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
+    private DatabaseReference databaseReference;
+
+    // Use tag for logs.
     private static final String TAG = "firebase";
 
-    private DatabaseReference databaseReference;
 
     // Initialize user data.
     String email;
@@ -41,8 +43,8 @@ public class RegisterActivity extends AppCompatActivity {
     String id;
     String type = "";
 
-    Button goBack;
-
+    // Initialize for layout.
+    Button go_back;
     EditText get_email;
     EditText get_password;
     EditText get_password2;
@@ -53,17 +55,21 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        // Set database .
         mAuth = FirebaseAuth.getInstance();
-        goBack = findViewById(R.id.goBack);
-
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        get_email = findViewById(R.id.getEmail);
-        get_password = findViewById(R.id.getPassword);
-        get_password2 = findViewById(R.id.getPassword2);
-        get_name = findViewById(R.id.getName);
-        }
+        // Get layout views.
+        go_back = findViewById(R.id.go_back);
+        get_email = findViewById(R.id.get_email);
+        get_password = findViewById(R.id.get_password);
+        get_password2 = findViewById(R.id.get_password2);
+        get_name = findViewById(R.id.get_name);
+    }
 
+    /**
+     * Get type from user
+     */
     public void onRadioButtonClicked(View view) {
         // Is the button now checked?
         boolean checked = ((RadioButton) view).isChecked();
@@ -81,19 +87,13 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        // Check if user is signed in (non-null) and update UI accordingly.
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        updateUI(currentUser);
-//    }
 
     /**
      * Creates user with email and password.
      */
     public void createUser(View view) {
 
+        // Get data out of input.
         email = get_email.getText().toString();
         password = get_password.getText().toString();
         password2 = get_password2.getText().toString();
@@ -104,35 +104,27 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(RegisterActivity.this, "Vul aub alle velden in!",
                     Toast.LENGTH_SHORT).show();
         }
+
+        // Check if passwords match.
         else if (!password.equals(password2)) {
             Toast.makeText(RegisterActivity.this, "Wachtwoorden komen niet overeen!",
                     Toast.LENGTH_SHORT).show();
         }
+
+        // Register to firebase and login.
         else {
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "createUserWithEmail:success");
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                addUser();
 
-                                if (type.equals("owner")) {
-                                    Intent intent = new Intent(RegisterActivity.this, AdvertActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                                else if (type.equals("walker")){
-                                    Intent intent = new Intent(RegisterActivity.this, ChooseActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                                else {
-                                    Toast.makeText(RegisterActivity.this, "Type gaat fout!",
-                                            Toast.LENGTH_SHORT).show();
-                                }
+                                // Add user to database and go to next activity.
+                                addUserToDB();
+                                goToNext();
 
                             } else {
                                 // If sign in fails, display a message to the user.
@@ -140,38 +132,69 @@ public class RegisterActivity extends AppCompatActivity {
                                 Toast.makeText(RegisterActivity.this, "Inloggen niet gelukt!",
                                         Toast.LENGTH_SHORT).show();
                             }
-
-                            // ...
                         }
                     });
         }
     }
 
-    /**
-     * Add an user with initial score 0.
-     */
-    public void addUser() {
-        id = mAuth.getCurrentUser().getUid();
-        Log.w(TAG, "user id" + id);
 
+    /**
+     * Add an user with initial values.
+     */
+    public void addUserToDB() {
+
+        // Get current user's id.
+        id = mAuth.getCurrentUser().getUid();
+
+        // Create new user and put in database.
+        // TODO: Delete advert_status.
         User aUser;
         aUser = new User(type, name, email, false, null);
         databaseReference.child("users").child(id).setValue(aUser);
     }
 
+
+    /**
+     * Check which type the current user is and go to corresponding next activity.
+     */
+    public void goToNext() {
+        if (type.equals("owner")) {
+            // Sent owner to activity to make an advert.
+            Intent intent = new Intent(RegisterActivity.this, AdvertActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+        else if (type.equals("walker")) {
+            // Sent walker to activity with an overview of adverts.
+            Intent intent = new Intent(RegisterActivity.this, ChooseActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        // TODO: Deze else weghalen????
+        else {
+            Toast.makeText(RegisterActivity.this, "Type gaat fout!",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    /**
+     * Go back to login page when clicked on button.
+     */
     public void goBack(View view) {
         Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        if (authStateListener != null) {
-            mAuth.removeAuthStateListener(authStateListener);
-        }
-    }
+    // TODO: is dit nodig?
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        if (authStateListener != null) {
+//            mAuth.removeAuthStateListener(authStateListener);
+//        }
+//    }
 
 }
