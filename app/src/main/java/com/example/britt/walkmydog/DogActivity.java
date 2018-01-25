@@ -108,20 +108,26 @@ public class DogActivity extends AppCompatActivity implements OnMapReadyCallback
 
         getFromDB();
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        if (lat == 0 && lon == 0) {
+            Toast.makeText(this, "location not found", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            location = new LatLng(lat, lon);
 
-        location = new LatLng(lat, lon);
+            mMap.addMarker(new MarkerOptions().position(location)
+                    .title("Location of the dog's boss"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
 
-        mMap.addMarker(new MarkerOptions().position(location)
-                .title("Location of the dog's boss"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+            moveCamera(location,
+                    DEFAULT_ZOOM);
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        }
 
 //        if (ActivityCompat.checkSelfPermission(DogActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 //            ActivityCompat.requestPermissions(DogActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, myLocationRequestCode);
@@ -132,10 +138,6 @@ public class DogActivity extends AppCompatActivity implements OnMapReadyCallback
 //        getLocation();
 
 //        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 21));
-
-        moveCamera(location,
-                DEFAULT_ZOOM);
-        mMap.getUiSettings().setMyLocationButtonEnabled(true);
     }
 
 
@@ -169,6 +171,9 @@ public class DogActivity extends AppCompatActivity implements OnMapReadyCallback
                 lat = mDog.lat;
                 lon = mDog.lon;
 
+                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.map);
+                mapFragment.getMapAsync(DogActivity.this);
             }
 
             @Override

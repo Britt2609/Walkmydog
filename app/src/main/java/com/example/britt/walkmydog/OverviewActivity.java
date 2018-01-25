@@ -115,7 +115,6 @@ public class OverviewActivity extends AppCompatActivity {
             Dog dog = (Dog) parent.getItemAtPosition(position);
 
             String bossID = dog.getId();
-            Log.w("TAGG", "hoi " + bossID);
 
             Intent intent = new Intent(OverviewActivity.this, DogActivity.class);
             intent.putExtra("bossID", bossID);
