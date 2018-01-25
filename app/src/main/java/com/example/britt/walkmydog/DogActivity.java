@@ -49,9 +49,9 @@ import java.util.List;
 public class DogActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     //vars
-    private Boolean mLocationPermissionsGranted = false;
+//    private Boolean mLocationPermissionsGranted = false;
     private GoogleMap mMap;
-    private FusedLocationProviderClient mFusedLocationProviderClient;
+//    private FusedLocationProviderClient mFusedLocationProviderClient;
 
     Spinner spinner;
 
@@ -61,8 +61,8 @@ public class DogActivity extends AppCompatActivity implements OnMapReadyCallback
     String dog;
     String id;
 
-    Double latitude;
-    Double longitude;
+//    Double latitude;
+//    Double longitude;
 
     TextView nameText;
     TextView descriptionText;
@@ -80,10 +80,6 @@ public class DogActivity extends AppCompatActivity implements OnMapReadyCallback
     private FirebaseAuth mAuth;
 
     private static final float DEFAULT_ZOOM = 15f;
-//    vars
-//    private Boolean mLocationPermissionsGranted = false;
-//    private GoogleMap mMap;
-//    private FusedLocationProviderClient mFusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,20 +104,13 @@ public class DogActivity extends AppCompatActivity implements OnMapReadyCallback
 
         Intent intent = getIntent();
         bossID = intent.getStringExtra("bossID");
+        Log.w("TAGGG", "bossss " + bossID);
 
         getFromDB();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-//        if (ActivityCompat.checkSelfPermission(DogActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(DogActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, myLocationRequestCode);
-//        }
-//        showSettingAlert();
-//        Log.d("TAGG", "LOCATIEEEE");
-//        mLocationPermissionsGranted = true;
-//        getLocation();
     }
 
     @Override
@@ -131,12 +120,20 @@ public class DogActivity extends AppCompatActivity implements OnMapReadyCallback
         location = new LatLng(lat, lon);
 
         mMap.addMarker(new MarkerOptions().position(location)
-                .title("Marker of position of the dog's boss"));
+                .title("Location of the dog's boss"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
 
-        Log.w("logtag", "" + location);
+//        if (ActivityCompat.checkSelfPermission(DogActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(DogActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, myLocationRequestCode);
+//        }
+//        showSettingAlert();
+//        Log.d("TAGG", "LOCATIEEEE");
+//        mLocationPermissionsGranted = true;
+//        getLocation();
 
-        moveCamera(new LatLng(lat, lon),
+//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 21));
+
+        moveCamera(location,
                 DEFAULT_ZOOM);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
     }
