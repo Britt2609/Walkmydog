@@ -62,14 +62,7 @@ public class RegisterActivity extends AppCompatActivity {
         get_password = findViewById(R.id.getPassword);
         get_password2 = findViewById(R.id.getPassword2);
         get_name = findViewById(R.id.getName);
-
-        email = get_email.getText().toString();
-        password = get_password.getText().toString();
-        password2 = get_password2.getText().toString();
-        name = get_name.getText().toString();
-
-
-    }
+        }
 
     public void onRadioButtonClicked(View view) {
         // Is the button now checked?
@@ -101,23 +94,16 @@ public class RegisterActivity extends AppCompatActivity {
      */
     public void createUser(View view) {
 
+        email = get_email.getText().toString();
+        password = get_password.getText().toString();
+        password2 = get_password2.getText().toString();
+        name = get_name.getText().toString();
+
         // Check if email and password are filled in.
         if (email.equals("") || name.equals("") || password.equals("") || type.equals("")) {
             Toast.makeText(RegisterActivity.this, "Vul aub alle velden in!",
                     Toast.LENGTH_SHORT).show();
         }
-//        else if (password.equals("")) {
-//            Toast.makeText(RegisterActivity.this, "Vul aub een wachtwoord in van ten minste 6 tekens!",
-//                    Toast.LENGTH_SHORT).show();
-//        }
-//        else if (name.equals("")) {
-//            Toast.makeText(RegisterActivity.this, "Vul aub een naam in!",
-//                    Toast.LENGTH_SHORT).show();
-//        }
-//        else if (type.equals("")) {
-//            Toast.makeText(RegisterActivity.this, "Vink aub een type gebruiker aan!",
-//                    Toast.LENGTH_SHORT).show();
-//        }
         else if (!password.equals(password2)) {
             Toast.makeText(RegisterActivity.this, "Wachtwoorden komen niet overeen!",
                     Toast.LENGTH_SHORT).show();

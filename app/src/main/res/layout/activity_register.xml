@@ -68,7 +68,7 @@
         android:ems="10"
         android:hint="password"
         android:inputType="textPersonName|textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/login"
+        app:layout_constraintBottom_toTopOf="@+id/getPassword2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
@@ -86,13 +86,23 @@
         android:ems="10"
         android:hint="password"
         android:inputType="textPersonName|textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/radioGroup"
+        app:layout_constraintBottom_toTopOf="@+id/textView4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/getPassword"
         app:layout_constraintVertical_bias="0.008" />
 
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="204dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="88dp"
+        android:text="password should contain at least 6 characters"
+        android:textSize="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/radioGroup"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/getPassword2" />
 
     <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/radioGroup"
@@ -101,10 +111,13 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/make_account"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView4">
 
         <RadioButton
             android:id="@+id/owner"
@@ -112,42 +125,41 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
+            android:onClick="onRadioButtonClicked"
             android:text="Baasje"
             android:textColor="@android:color/black"
             app:layout_constraintBottom_toTopOf="@+id/radioButton2"
             app:layout_constraintTop_toBottomOf="@+id/getPassword2"
             app:layout_constraintVertical_bias="1.0"
-            tools:layout_editor_absoluteX="85dp"
-            android:onClick="onRadioButtonClicked"/>
+            tools:layout_editor_absoluteX="85dp" />
 
         <RadioButton
             android:id="@+id/walker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="36dp"
+            android:onClick="onRadioButtonClicked"
             android:text="Uitlater"
             android:textColor="@android:color/black"
             app:layout_constraintBottom_toTopOf="@+id/make_account"
-            tools:layout_editor_absoluteX="85dp"
-            android:onClick="onRadioButtonClicked" />
+            tools:layout_editor_absoluteX="85dp" />
     </RadioGroup>
-
 
 
     <Button
         android:id="@+id/make_account"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="40dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:background="#3f3027"
+        android:onClick="createUser"
         android:text="make account"
         android:textColor="#ffffff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent"
-        android:onClick="createUser"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
