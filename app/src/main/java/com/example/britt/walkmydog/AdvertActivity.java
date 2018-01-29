@@ -343,7 +343,7 @@ public class AdvertActivity extends AppCompatActivity {
             }
         }
         catch (SecurityException e){
-            Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage() );
+//            Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage() );
         }
     }
 
