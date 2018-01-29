@@ -334,9 +334,8 @@ public class AdvertActivity extends AppCompatActivity {
                             }
                         }
                         else{
-                            Toast.makeText(AdvertActivity.this,
-                                    "unable to get current location",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AdvertActivity.this,"unable to " +
+                                            "get current location", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
