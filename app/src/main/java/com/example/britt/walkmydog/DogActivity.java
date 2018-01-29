@@ -1,12 +1,17 @@
 package com.example.britt.walkmydog;
 
 import android.*;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Location;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -86,8 +91,8 @@ public class DogActivity extends AppCompatActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dog);
 
+        // Initialize for database.
         databaseReference = FirebaseDatabase.getInstance().getReference();
-
         mAuth = FirebaseAuth.getInstance();
         id = mAuth.getCurrentUser().getUid();
 
@@ -236,6 +241,7 @@ public class DogActivity extends AppCompatActivity implements OnMapReadyCallback
         Log.d("TAGG", "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
     }
+
 }
 
 //    public void getLocation() {

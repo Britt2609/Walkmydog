@@ -1,6 +1,26 @@
 <resources>
     <string name="app_name">Walk my dog</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!--strings used in layout-->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="go_to_option">Ga naar optie</string>
+    <string name="make_advert">Maak advertentie</string>
+    <string name="confirming_text">Advertentie geplaatst! U ontvangt een email zodra er een uitlater beschikbaar is.</string>
+    <string name="thanking_text">Bedankt voor het gebruiken van Walk My Dog!</string>
+    <string name="Make_contact">Maak contact met het baasje van</string>
+    <string name="make_appointment">Afspraak maken</string>
+    <string name="make_account">Maak account</string>
+    <string name="walked_dogs">Uitgelaten honden</string>
+    <string name="walker">Uitlater</string>
+    <string name="boss">Baasje</string>
+    <string name="password_warning">Wachtwoord moet ten minste 6 karakters bevatten</string>
+    <string name="password_hint">wachtwoord</string>
+    <string name="email_hint">email</string>
+    <string name="user_name">gebruikersnaam</string>
+    <string name="go_back">terug</string>
+    <string name="log_in">Inloggen</string>
+    <string name="add_picture">Voeg foto toe</string>
+    <string name="dog_name_hint">Naam hond</string>
+    <string name="description_hint">Omschrijving, ras, uitlaattijden, etc.</string>
+    <string name="clear_list">Maak lijst leeg</string>
 </resources>

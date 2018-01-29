@@ -16,7 +16,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="#3f3027"
-        android:text="Go to option"
+        android:text="@string/go_to_option"
         android:textColor="#ffffff"
         android:textSize="10sp"
         android:onClick="SelectOption"
@@ -80,7 +80,6 @@
                 android:id="@+id/dog_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="name"
                 android:textSize="24sp" />
 
             <ImageView
@@ -95,7 +94,6 @@
                 android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Omschrijving"
                 android:textSize="20sp"
                 tools:text="name" />
         </LinearLayout>
@@ -111,7 +109,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:onClick="makeAppointment"
-        android:text="Afspraak maken"
+        android:text="@string/make_appointment"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -39,31 +39,39 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
 
+import static com.example.britt.walkmydog.DogActivity.getImage;
 import static java.lang.Double.valueOf;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.firebase.database.ValueEventListener;
 
 
 public class AdvertActivity extends AppCompatActivity {
 
     // Initialize dog data.
-    String dog_name;
+    String dogName;
     String description;
+    String encodedPicture;
+
+    // Initialize user data.
+    Boolean advertState;
     String id;
-    String encoded_picture;
+    User mUser;
+    Dog mDog;
 
     // Initialize for layout.
-    ImageView get_picture;
+    ImageView getPicture;
     Spinner spinner;
-    TextView get_text;
-    EditText get_dog_name;
-    EditText get_description;
+    EditText getDogName;
+    EditText getDescription;
 
     // Initialize for database.
     private FirebaseAuth mAuth;
@@ -92,18 +100,18 @@ public class AdvertActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_advert);
 
-        // Set spinner to be able to choose category.
+        // Get layout views.
+        getDogName = findViewById(R.id.dogName);
+        getDescription = findViewById(R.id.description);
+        getPicture = findViewById(R.id.picture);
         spinner = findViewById(R.id.spinner3);
+
+        // Set spinner to be able to choose option.
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinner_advert,
                 android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        // Get layout views.
-        get_dog_name = findViewById(R.id.dog_name);
-        get_description = findViewById(R.id.description);
-        get_picture = findViewById(R.id.picture);
-        get_text = findViewById(R.id.use_logo);
 
         // If not already given, ask for permission to use location.
         // If not already turned on, ask user to turn on location.
@@ -122,7 +130,12 @@ public class AdvertActivity extends AppCompatActivity {
         }
 
         // Get database.
+        mAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        id = mAuth.getCurrentUser().getUid();
+
+        getFromDB();
     }
 
 
@@ -140,6 +153,37 @@ public class AdvertActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+    }
+
+    public void getFromDB() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+             @Override
+             public void onDataChange(DataSnapshot dataSnapshot) {
+                 mUser = dataSnapshot.child("users").child(id).getValue(User.class);
+                 advertState = mUser.advertState;
+                 Log.w("cavia", advertState + "");
+
+                 // Check which type the current user is and go to corresponding next activity.
+                 if (advertState) {
+                     Log.w("Tagg", "verander bestaande advertentie");
+                     mDog = dataSnapshot.child("dogs").child(id).getValue(Dog.class);
+                     Log.w("whyy", mDog + "" );
+                     getImage(mDog.photo, getPicture);
+                     getDogName.setText(mDog.name);
+                     getDescription.setText(mDog.description);
+                 }
+
+                 else {
+                     Toast.makeText(AdvertActivity.this, "Maak een advertentie aan",
+                             Toast.LENGTH_SHORT).show();
+                 }
+             }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("value failure: ", "Failed to read value.");
+            }
+        });
     }
 
 
@@ -219,7 +263,7 @@ public class AdvertActivity extends AppCompatActivity {
             imageBitmap = (Bitmap) extras.get("data");
 
             // Show image in current activity.
-            get_picture.setImageBitmap(imageBitmap);
+            getPicture.setImageBitmap(imageBitmap);
 
             // Encode the picture and save the picture to firebase.
             encodeBitmap(imageBitmap);
@@ -235,19 +279,19 @@ public class AdvertActivity extends AppCompatActivity {
 
         // Use base64 to encode the picture.
         String imageEncoded = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
-        encoded_picture = imageEncoded;
+        encodedPicture = imageEncoded;
     }
 
-    // TODO: comment vanaf hier verder.
+    /**
+     * Get current latitude and longitude of the dog's boss.
+     */
     public void getLocation() {
-
-        Log.d(TAG, "getDeviceLocation: getting the devices current location");
-
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         try{
             if(mLocationPermissionsGranted){
 
+                // Get last known location of device.
                 final Task location = mFusedLocationProviderClient.getLastLocation();
                 location.addOnCompleteListener(new OnCompleteListener() {
                     @Override
@@ -256,12 +300,12 @@ public class AdvertActivity extends AppCompatActivity {
                             Location currentLocation = (Location) task.getResult();
 
                             if (!(task.getResult() == null)) {
+                                // Set longitude and latitude given.
                                 latitude = currentLocation.getLatitude();
                                 longitude = currentLocation.getLongitude();
                             }
 
                         }else{
-                            Log.d(TAG, "onComplete: current location is null");
                             Toast.makeText(AdvertActivity.this, "unable to get current location", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -272,21 +316,31 @@ public class AdvertActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Show a dialog when GPS is disabled to change GPS settings.
+     */
     public void showSettingAlert()
     {
+        // Check if GPS is enabled.
         String locationProviders = Settings.Secure.getString(getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
         if (locationProviders == null || locationProviders.equals("")) {
+
+            // Build a dialog with the choice to change GPS settings.
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-            alertDialog.setTitle("GPS setting!");
-            alertDialog.setMessage("GPS is not enabled, Do you want to go to settings menu? ");
-            alertDialog.setPositiveButton("Setting", new DialogInterface.OnClickListener() {
+            alertDialog.setTitle("GPS instellingen!");
+            alertDialog.setMessage("GPS staat niet aan, wil je naar instellingen? ");
+            alertDialog.setPositiveButton("Instellingen", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+
+                    // Go to settings menu.
                     Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                     AdvertActivity.this.startActivity(intent);
                 }
             });
-            alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+            // Close dialog without turning on gps.
+            alertDialog.setNegativeButton("Weigeren", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
@@ -296,27 +350,29 @@ public class AdvertActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Set advert in firebase and go to next activity when button clicked.
+     */
     public void makeAdvert(View view) {
 
-        description = get_description.getText().toString();
-        dog_name = get_dog_name.getText().toString();
+        // Get user input.
+        description = getDescription.getText().toString();
+        dogName = getDogName.getText().toString();
 
+        // Get firebase data.
         mAuth = FirebaseAuth.getInstance();
-        id = mAuth.getCurrentUser().getUid();
-        Log.w("userid", id);
+
         Dog aDog;
-        aDog = new Dog(dog_name, description, encoded_picture, latitude, longitude, id);
+        aDog = new Dog(dogName, description, encodedPicture, latitude, longitude, id);
 
-        Log.w("NAMEE", dog_name + " " + description);
-
+        // Change advert status and set dog into database.
         databaseReference.child("users").child(id).child("advert_status").setValue(true);
-
         databaseReference.child("dogs").child(id).child("dog").setValue(aDog);
 
+        // Go to next activity to confirm the processing of the advert.
         Intent intent = new Intent(AdvertActivity.this, ConfirmActivity.class);
-        intent.putExtra("name", dog_name);
-        intent.putExtra("photo", encoded_picture);
+        intent.putExtra("name", dogName);
+        intent.putExtra("photo", encodedPicture);
         startActivity(intent);
-        finish();
     }
 }

@@ -44,11 +44,11 @@ public class RegisterActivity extends AppCompatActivity {
     String type = "";
 
     // Initialize for layout.
-    Button go_back;
-    EditText get_email;
-    EditText get_password;
-    EditText get_password2;
-    EditText get_name;
+    Button goBack;
+    EditText getEmail;
+    EditText getPassword;
+    EditText getPassword2;
+    EditText getName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +60,11 @@ public class RegisterActivity extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         // Get layout views.
-        go_back = findViewById(R.id.go_back);
-        get_email = findViewById(R.id.get_email);
-        get_password = findViewById(R.id.get_password);
-        get_password2 = findViewById(R.id.get_password2);
-        get_name = findViewById(R.id.get_name);
+        goBack = findViewById(R.id.goBack);
+        getEmail = findViewById(R.id.getEmail);
+        getPassword = findViewById(R.id.getPassword);
+        getPassword2 = findViewById(R.id.getPassword2);
+        getName = findViewById(R.id.getName);
     }
 
     /**
@@ -93,26 +93,10 @@ public class RegisterActivity extends AppCompatActivity {
      */
     public void createUser(View view) {
 
-        // Get data out of input.
-        email = get_email.getText().toString();
-        password = get_password.getText().toString();
-        password2 = get_password2.getText().toString();
-        name = get_name.getText().toString();
-
-        // Check if email and password are filled in.
-        if (email.equals("") || name.equals("") || password.equals("") || type.equals("")) {
-            Toast.makeText(RegisterActivity.this, "Vul aub alle velden in!",
-                    Toast.LENGTH_SHORT).show();
-        }
-
-        // Check if passwords match.
-        else if (!password.equals(password2)) {
-            Toast.makeText(RegisterActivity.this, "Wachtwoorden komen niet overeen!",
-                    Toast.LENGTH_SHORT).show();
-        }
+        checkInput();
 
         // Register to firebase and login.
-        else {
+        if (checkInput()) {
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -135,6 +119,29 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     });
         }
+    }
+
+    public boolean checkInput() {
+        // Get data out of input.
+        email = getEmail.getText().toString();
+        password = getPassword.getText().toString();
+        password2 = getPassword2.getText().toString();
+        name = getName.getText().toString();
+
+        // Check if email and password are filled in.
+        if (email.equals("") || name.equals("") || password.equals("") || type.equals("")) {
+            Toast.makeText(RegisterActivity.this, "Vul aub alle velden in!",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // Check if passwords match.
+        else if (!password.equals(password2)) {
+            Toast.makeText(RegisterActivity.this, "Wachtwoorden komen niet overeen!",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 
 

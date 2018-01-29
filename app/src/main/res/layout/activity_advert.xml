@@ -31,7 +31,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="#3f3027"
-        android:text="Go to option"
+        android:text="@string/go_to_option"
         android:textColor="#ffffff"
         android:textSize="10sp"
         android:onClick="SelectOption"
@@ -43,7 +43,7 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <EditText
-        android:id="@+id/dog_name"
+        android:id="@+id/dogName"
         android:layout_width="290dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -52,7 +52,7 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:hint="Naam hond"
+        android:hint="@string/dog_name_hint"
         android:textAlignment="viewStart"
         app:layout_constraintBottom_toTopOf="@+id/description"
         app:layout_constraintEnd_toEndOf="parent"
@@ -69,14 +69,14 @@
         android:layout_marginStart="8dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:hint="Omschrijving, ras, uitlaattijden, etc."
+        android:hint="@string/description_hint"
         android:textAlignment="viewStart"
-        app:layout_constraintBottom_toTopOf="@+id/make_picture"
+        app:layout_constraintBottom_toTopOf="@+id/makePicture"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/make_picture"
+        android:id="@+id/makePicture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -84,7 +84,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:onClick="makePicture"
-        android:text="Voeg foto toe"
+        android:text="@string/add_picture"
         android:textAllCaps="false"
         android:textColor="#0000ff"
         android:textSize="18sp"
@@ -96,14 +96,14 @@
         app:layout_constraintVertical_bias="0.434" />
 
     <TextView
-        android:id="@+id/use_logo"
+        android:id="@+id/useLogo"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_marginBottom="44dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:text="of gebruik het logo"
-        app:layout_constraintBottom_toTopOf="@+id/make_advert"
+        app:layout_constraintBottom_toTopOf="@+id/makeAdvert"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent" />
@@ -116,24 +116,24 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/use_logo"
+        app:layout_constraintBottom_toTopOf="@+id/useLogo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/make_picture"
+        app:layout_constraintTop_toBottomOf="@+id/makePicture"
         app:layout_constraintVertical_bias="0.918"
         app:srcCompat="@drawable/logo" />
 
 
 
     <Button
-        android:id="@+id/make_advert"
+        android:id="@+id/makeAdvert"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:text="Maak advertentie"
+        android:text="@string/make_advert"
         android:onClick="makeAdvert"
         android:background="#3f3027"
         android:textColor="#ffffff"

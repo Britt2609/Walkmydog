@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/dogPicture"
-        android:layout_width="122dp"
-        android:layout_height="100dp"
+        android:layout_width="89dp"
+        android:layout_height="68dp"
         android:layout_marginBottom="50dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -26,7 +26,6 @@
     <TextView
         android:id="@+id/dogName"
         android:layout_width="200sp"
-        android:layout_height="wrap_content"
-        android:text="Name" />
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

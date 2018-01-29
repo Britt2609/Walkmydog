@@ -39,7 +39,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // Initialize layout.
     Button login;
-    Button user_email;
+    Button userEmail;
+    EditText getEmail;
+    EditText getPassword;
 
     User mUser;
 
@@ -51,45 +53,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Set listeners on buttons for logging in and go to creating an account.
         login = findViewById(R.id.login);
         login.setOnClickListener(this);
-        user_email = findViewById(R.id.make_account);
-        user_email.setOnClickListener(this);
+        userEmail = findViewById(R.id.makeAccount);
+        userEmail.setOnClickListener(this);
 
         // Set AuthStateListener to make sure only logged in users can go to next activity.
         mAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        // TODO: Zijn deze authstate listeners nodig???????
-//        authStateListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                FirebaseUser user = firebaseAuth.getCurrentUser();
-//
-//                if (user != null) {
-//                    Log.d(TAG, "onAuthStateChanged:signedIn" + user.getUid());
-//                    Intent intent = new Intent(MainActivity.this, ChooseActivity.class);
-//                    startActivity(intent);
-//                    finish();
-//                } else {
-//                    Log.d(TAG, "onAuthStateChanged:signedIn");
-//                }
-//            }
-//        };
-//
-//        authStateListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                FirebaseUser user = firebaseAuth.getCurrentUser();
-//
-//                if (user != null) {
-//                    Log.d(TAG, "onAuthStateChanged:signedIn" + user.getUid());
-//                    Intent intent = new Intent(MainActivity.this, AdvertActivity.class);
-//                    startActivity(intent);
-//                    finish();
-//                } else {
-//                    Log.d(TAG, "onAuthStateChanged:signedIn");
-//                }
-//            }
-//        };
+        // Get input of user.
+        getEmail = findViewById(R.id.getEmail);
+        getPassword = findViewById(R.id.getPassword);
+
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                if (user != null) {
+                    id = user.getUid();
+                    sentToNext();
+                } else {
+                    Log.d(TAG, "onAuthStateChanged:signedIn");
+                }
+            }
+        };
+
+
     }
 
 
@@ -104,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 logIn();
                 break;
 
-            case R.id.make_account:
+            case R.id.makeAccount:
 
                 // Go to next activity to register.
                 Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
@@ -116,16 +105,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     /**
-     * Logs in user with email and password.
+     * Logs in user with email and password and adds to firebase.
      */
     public void logIn() {
 
-        // Get input of user.
-        EditText get_email = findViewById(R.id.getEmail);
-        EditText get_password = findViewById(R.id.getPassword);
-
-        email = get_email.getText().toString();
-        password = get_password.getText().toString();
+        // Get input from user.
+        email = getEmail.getText().toString();
+        password = getPassword.getText().toString();
 
         // Check if email and password are filled in.
         if (email.equals("") || password.equals("")) {
@@ -138,10 +124,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
+                            // Sign in success, update UI with the signed-in user's information and go to next activity.
                             if (task.isSuccessful()) {
-
-                                // Sign in success, update UI with the signed-in user's information and go to next activity.
-                                Log.d(TAG, "signInWithEmail:success");
 
                                 // Get current user id.
                                 mAuth = FirebaseAuth.getInstance();
@@ -158,8 +142,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 Toast.makeText(MainActivity.this, "Email/wachtwoord klopt niet!",
                                         Toast.LENGTH_SHORT).show();
                             }
-
-                            // ...
                         }
                     });
         }
@@ -172,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.w("hamster", "" + id);
                 mUser = dataSnapshot.child("users").child(id).getValue(User.class);
                 type = mUser.userType;
 
@@ -204,10 +187,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    // TODO:is dit nodig?
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        mAuth.addAuthStateListener(authStateListener);
-//    }
+    // TODO: commenten
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(authStateListener);
+    }
 }

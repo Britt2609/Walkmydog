@@ -11,16 +11,16 @@ public class User {
     public String name;
     public String email;
     // TODO: advert_status nog weghalen!!!!!!!!!!!!!!!!
-    public Boolean advert_status;
+    public Boolean advertState;
     public ArrayList<Dog> favorites;
 
     public User () {}
 
-    public User(String userType, String name, String email, Boolean advert_status, ArrayList<Dog> favorites) {
+    public User(String userType, String name, String email, Boolean advertState, ArrayList<Dog> favorites) {
         this.userType = userType;
         this.name = name;
         this.email = email;
-        this.advert_status = advert_status;
+        this.advertState = advertState;
         this.favorites = favorites;
     }
 
@@ -49,11 +49,11 @@ public class User {
     }
 
     public Boolean getAdvert_status() {
-        return advert_status;
+        return advertState;
     }
 
     public void setAdvert_status(Boolean advert_status) {
-        this.advert_status = advert_status;
+        this.advertState = advert_status;
     }
 
     public ArrayList<Dog> getFavorites() {

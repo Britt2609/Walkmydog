@@ -29,16 +29,17 @@ import java.util.Iterator;
 
 public class ChooseActivity extends AppCompatActivity {
 
+    // Initialize layout.
     Spinner spinner;
-
-    String id;
-
     ListView dogList;
 
+    // Initialize user data.
+    String id;
+
+    // Initialize for database.
     private DatabaseReference databaseReference;
 
     ArrayList<Dog> dogArray = new ArrayList<Dog>();
-
     DogAdapter mAdapter;
 
     @Override
@@ -46,33 +47,39 @@ public class ChooseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose);
 
-        // Set spinner to be able to choose category.
+        // Get layout views.
+        dogList = findViewById(R.id.dogList);
         spinner = findViewById(R.id.spinner);
+
+        // Set spinner to be able to choose option.
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinner_choose,
                 android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        dogList = findViewById(R.id.dogList);
-
+        // Get information out of database.
         databaseReference = FirebaseDatabase.getInstance().getReference();
-
         getFromDB();
 
+        // Set listener on all dogs.
         dogList.setOnItemClickListener(new OnItemClickListener());
     }
 
     /**
-     * Give selected category to next activity and go to next activity.
+     * Go to selected option in spinner.
      */
     public void SelectOption(View view) {
         String option = spinner.getSelectedItem().toString();
+
+        // Log out when button is clicked.
         if (option.equals("Log Out")) {
             FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(ChooseActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         }
+
+        // Go to overview when button is clicked.
         else if (option.equals("Overview"))
         {
             Intent intent = new Intent(ChooseActivity.this, OverviewActivity.class);
@@ -81,6 +88,9 @@ public class ChooseActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Get dtata of all dogs
+     */
     public void getFromDB() {
 
         ValueEventListener eventListener = new ValueEventListener() {

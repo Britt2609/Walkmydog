@@ -8,7 +8,7 @@
     tools:context="com.example.britt.walkmydog.MainActivity">
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/appName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -16,15 +16,15 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:fontFamily="cursive"
-        android:text="Walk my dog"
+        android:text="@string/app_name"
         android:textSize="36sp"
-        app:layout_constraintBottom_toTopOf="@+id/imageView"
+        app:layout_constraintBottom_toTopOf="@+id/logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/logo"
         android:layout_width="193dp"
         android:layout_height="161dp"
         android:layout_marginEnd="8dp"
@@ -45,12 +45,12 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:ems="10"
-        android:hint="email"
-        android:inputType="textPersonName"
+        android:hint="@string/email_hint"
+        android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/logo" />
 
     <EditText
         android:id="@+id/getPassword"
@@ -62,7 +62,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:hint="wachtwoord"
+        android:hint="@string/password_hint"
         android:inputType="textPersonName|textPassword"
         app:layout_constraintBottom_toTopOf="@+id/login"
         app:layout_constraintEnd_toEndOf="parent"
@@ -80,20 +80,20 @@
         android:layout_marginStart="8dp"
         android:background="#3f3027"
         android:textColor="#ffffff"
-        android:text="log in"
-        app:layout_constraintBottom_toTopOf="@+id/make_account"
+        android:text="@string/log_in"
+        app:layout_constraintBottom_toTopOf="@+id/makeAccount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/make_account"
+        android:id="@+id/makeAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:background="#3f3027"
-        android:text="maak account"
+        android:text="@string/make_account"
         android:textColor="#ffffff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
