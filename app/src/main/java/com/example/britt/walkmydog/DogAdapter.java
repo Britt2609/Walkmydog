@@ -1,12 +1,7 @@
 package com.example.britt.walkmydog;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
-import android.support.v4.widget.ResourceCursorAdapter;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,25 +9,14 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageRequest;
-import com.android.volley.toolbox.Volley;
 
 import java.util.ArrayList;
 
 import static com.example.britt.walkmydog.DogActivity.getImage;
-import static java.security.AccessController.getContext;
-
-/**
- * Created by britt on 11-1-2018.
- */
 
 public class DogAdapter extends ArrayAdapter {
 
+    // Initialize for layout.
     ImageView picture;
     TextView name;
 
@@ -48,37 +32,23 @@ public class DogAdapter extends ArrayAdapter {
             view = LayoutInflater.from(getContext()).inflate(R.layout.dog_adapter, parent, false);
         }
 
+        // Get layout views.
         name = view.findViewById(R.id.dogName);
         picture = view.findViewById(R.id.dogPicture);
 
+        // Get information of dogs.
         Dog mDog = (Dog) getItem(position);
-
         String dogPhoto = mDog.photo;
         String dogName = mDog.name;
         String id = mDog.id;
 
-        if (dogPhoto == null) {
-            Log.d("LOGO", "Logo is used");
-        }
-
-        else {
+        // Set dog's data in layout.
+        name.setText(dogName);
+        picture.setTag(id);
+        if (dogPhoto != null) {
             getImage(dogPhoto, picture);
         }
 
-        name.setText(dogName);
-        picture.setTag(id);
-
         return view;
     }
-
-//    public void getImage(String photo) {
-//        if (photo == null) {
-//            Log.w("LOGO", "Logo is used");
-//        }
-//        else {
-//            byte[] decodedString = Base64.decode(photo, Base64.DEFAULT);
-//            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-//            picture.setImageBitmap(decodedByte);
-//        }
-//    }
 }

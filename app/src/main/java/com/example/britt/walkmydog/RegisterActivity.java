@@ -55,7 +55,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        // Set database .
+        // Set database ready to use.
         mAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -66,6 +66,7 @@ public class RegisterActivity extends AppCompatActivity {
         getPassword2 = findViewById(R.id.getPassword2);
         getName = findViewById(R.id.getName);
     }
+
 
     /**
      * Get type from user
@@ -93,6 +94,7 @@ public class RegisterActivity extends AppCompatActivity {
      */
     public void createUser(View view) {
 
+        // Check if correct input is given.
         checkInput();
 
         // Register to firebase and login.
@@ -110,17 +112,22 @@ public class RegisterActivity extends AppCompatActivity {
                                 addUserToDB();
                                 goToNext();
 
-                            } else {
+                            }
+                            else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                Toast.makeText(RegisterActivity.this, "Inloggen niet gelukt!",
-                                        Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this,
+                                        "Inloggen niet gelukt!", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
         }
     }
 
+
+    /**
+     * Check if all input is correctly given.
+     */
     public boolean checkInput() {
         // Get data out of input.
         email = getEmail.getText().toString();
@@ -154,7 +161,6 @@ public class RegisterActivity extends AppCompatActivity {
         id = mAuth.getCurrentUser().getUid();
 
         // Create new user and put in database.
-        // TODO: Delete advert_status.
         User aUser;
         aUser = new User(type, name, email, false, null);
         databaseReference.child("users").child(id).setValue(aUser);
@@ -165,23 +171,19 @@ public class RegisterActivity extends AppCompatActivity {
      * Check which type the current user is and go to corresponding next activity.
      */
     public void goToNext() {
+
+        // Sent owner to activity to make an advert.
         if (type.equals("owner")) {
-            // Sent owner to activity to make an advert.
             Intent intent = new Intent(RegisterActivity.this, AdvertActivity.class);
             startActivity(intent);
             finish();
         }
 
+        // Sent walker to activity with an overview of adverts.
         else if (type.equals("walker")) {
-            // Sent walker to activity with an overview of adverts.
             Intent intent = new Intent(RegisterActivity.this, ChooseActivity.class);
             startActivity(intent);
             finish();
-        }
-        // TODO: Deze else weghalen????
-        else {
-            Toast.makeText(RegisterActivity.this, "Type gaat fout!",
-                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -194,14 +196,5 @@ public class RegisterActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
-    // TODO: is dit nodig?
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        if (authStateListener != null) {
-//            mAuth.removeAuthStateListener(authStateListener);
-//        }
-//    }
 
 }

@@ -1,34 +1,25 @@
 package com.example.britt.walkmydog;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 
 import static com.example.britt.walkmydog.DogActivity.getImage;
 
 public class ConfirmActivity extends AppCompatActivity {
 
+    // Initialize dog data.
     String picture;
     String dogNameText;
 
+    // Initialize for layout.
     ImageView photo;
     TextView dogName;
     Spinner spinner;
@@ -38,48 +29,43 @@ public class ConfirmActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm);
 
+        // Get layout views.
+        spinner = findViewById(R.id.spinnerOptions2);
+        dogName = findViewById(R.id.dogName);
+        photo = findViewById(R.id.photo);
 
-        // Set spinner to be able to choose category.
-        spinner = findViewById(R.id.spinner4);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinner_confirm,
-                android.R.layout.simple_spinner_item);
+        // Set spinner to be able to choose option.
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.spinner_confirm, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
+        // Get data from intent en set to layout.
         Intent intent = getIntent();
         picture = intent.getStringExtra("photo");
         dogNameText = intent.getStringExtra("name");
-        dogName = findViewById(R.id.dogName);
         dogName.setText(dogNameText);
-
-        photo = findViewById(R.id.photo);
         getImage(picture, photo);
     }
 
-//    public void getImage() {
-//        if (picture == null) {
-//            Log.w("LOGO", "Logo is used");
-//        }
-//        else {
-//            byte[] decodedString = Base64.decode(picture, Base64.DEFAULT);
-//            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-//            photo.setImageBitmap(decodedByte);
-//        }
-//    }
 
     /**
      * Give selected category to next activity and go to next activity.
      */
     public void SelectOption(View view) {
         String option = spinner.getSelectedItem().toString();
-        if(option.equals("Log Out"))
+
+        // Log out when button is clicked.
+        if(option.equals("Log uit"))
         {
             FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(ConfirmActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         }
-        else if (option.equals("Change advert"))
+
+        // Go to change advert when button is clicked.
+        else if (option.equals("Verander advertentie"))
         {
             Intent intent = new Intent(ConfirmActivity.this, AdvertActivity.class);
             startActivity(intent);

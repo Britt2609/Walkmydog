@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private DatabaseReference databaseReference;
+    User mUser;
 
     // Set tag for logs.
     private static final String TAG = "firebase";
@@ -43,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     EditText getEmail;
     EditText getPassword;
 
-    User mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         userEmail = findViewById(R.id.makeAccount);
         userEmail.setOnClickListener(this);
 
-        // Set AuthStateListener to make sure only logged in users can go to next activity.
+        // Set database ready to use.
         mAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -64,21 +64,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getEmail = findViewById(R.id.getEmail);
         getPassword = findViewById(R.id.getPassword);
 
-        authStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-
-                if (user != null) {
-                    id = user.getUid();
-                    sentToNext();
-                } else {
-                    Log.d(TAG, "onAuthStateChanged:signedIn");
-                }
-            }
-        };
-
-
+        // Check if user is still signed in.
+        checkIfSignedIn();
     }
 
 
@@ -119,12 +106,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.LENGTH_SHORT).show();
         }
 
+        // Check if input is correct and sign in with firebase.
         else {
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            // Sign in success, update UI with the signed-in user's information and go to next activity.
+
+                            /* Sign in success, update UI with the signed-in user's information
+                            and go to next activity. */
                             if (task.isSuccessful()) {
 
                                 // Get current user id.
@@ -134,18 +124,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                                 // Get type from database and sent user to next activity.
                                 sentToNext();
+                            }
 
-
-                            } else {
-                                // If sign in fails, display a message to the user.
+                            // If sign in fails, display a message to the user.
+                            else {
                                 Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                Toast.makeText(MainActivity.this, "Email/wachtwoord klopt niet!",
+                                Toast.makeText(MainActivity.this,
+                                        "Email/wachtwoord klopt niet!",
                                         Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
         }
     }
+
 
     /**
      * Get user data from database and sent user to next corresponding activity
@@ -154,28 +146,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.w("hamster", "" + id);
+
+                // Check which type the current user is.
                 mUser = dataSnapshot.child("users").child(id).getValue(User.class);
                 type = mUser.userType;
 
-                // Check which type the current user is and go to corresponding next activity.
+                // Sent owner to activity to make an advert.
                 if (type.equals("owner")) {
-                    // Sent owner to activity to make an advert.
-                    Intent intent = new Intent(MainActivity.this, AdvertActivity.class);
+                    Intent intent = new Intent(MainActivity.this,
+                            AdvertActivity.class);
                     startActivity(intent);
-                    finish();
                 }
 
+                // Sent walker to activity with an overview of adverts.
                 else if (type.equals("walker")){
-                    // Sent walker to activity with an overview of adverts.
-                    Intent intent = new Intent(MainActivity.this, ChooseActivity.class);
+                    Intent intent = new Intent(MainActivity.this,
+                            ChooseActivity.class);
                     startActivity(intent);
-                    finish();
-                }
-
-                else {
-                    Toast.makeText(MainActivity.this, "Type is fout!!!!",
-                            Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -187,7 +174,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    // TODO: commenten
+    /**
+     * Check if user is still signed in and sent to next activity.
+     */
+    public void checkIfSignedIn() {
+        // Check if user is signed in.
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+
+                    // Get current user and sent to next activity.
+                    id = user.getUid();
+                    sentToNext();
+                }
+                else {
+                    Log.d(TAG, "onAuthStateChanged:signedIn");
+                }
+            }
+        };
+    }
+
+
     @Override
     public void onStart() {
         super.onStart();

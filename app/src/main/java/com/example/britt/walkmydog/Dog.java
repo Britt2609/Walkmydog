@@ -1,10 +1,6 @@
 package com.example.britt.walkmydog;
 
-import android.widget.ImageView;
-
-/**
- * Created by britt on 10-1-2018.
- */
+// TODO: hierin commenten en evt functies weghalen?
 
 public class Dog {
     public String name;
@@ -33,37 +29,7 @@ public class Dog {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }
-
-    public Double getLat() {
-        return lat;
-    }
-
-    public void setLat(Double lat) {
-        this.lat = lat;
-    }
-
-    public Double getLon() {
-        return lon;
-    }
-
-    public void setLon(Double lon) {
-        this.lon = lon;
-    }
 
     public String getId() {
         return id;

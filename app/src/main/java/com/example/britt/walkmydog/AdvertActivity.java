@@ -27,6 +27,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -72,6 +73,7 @@ public class AdvertActivity extends AppCompatActivity {
     Spinner spinner;
     EditText getDogName;
     EditText getDescription;
+    Button makeAdvert;
 
     // Initialize for database.
     private FirebaseAuth mAuth;
@@ -104,24 +106,26 @@ public class AdvertActivity extends AppCompatActivity {
         getDogName = findViewById(R.id.dogName);
         getDescription = findViewById(R.id.description);
         getPicture = findViewById(R.id.picture);
-        spinner = findViewById(R.id.spinner3);
+        spinner = findViewById(R.id.spinnerOptions1);
+        makeAdvert = findViewById(R.id.makeAdvert);
 
         // Set spinner to be able to choose option.
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinner_advert,
-                android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.spinner_advert, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
 
-        // If not already given, ask for permission to use location.
-        // If not already turned on, ask user to turn on location.
-        if (ActivityCompat.checkSelfPermission(AdvertActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(AdvertActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, myLocationRequestCode);
+        /* If not already given, ask for permission to use location.
+        If not already turned on, ask user to turn on location. */
+        if (ActivityCompat.checkSelfPermission(AdvertActivity.this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(AdvertActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, myLocationRequestCode);
             showSettingAlert();
         }
-
+        // TODO: comment hier zetten?
         else {
-
             if (boolLocation) {
                 showSettingAlert();
             }
@@ -129,13 +133,14 @@ public class AdvertActivity extends AppCompatActivity {
             getLocation();
         }
 
-        // Get database.
+        // Set database ready to use.
         mAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         id = mAuth.getCurrentUser().getUid();
 
-        getFromDB();
+        // Get current dog from user when existing.
+        getDogFromDB();
     }
 
 
@@ -146,7 +151,7 @@ public class AdvertActivity extends AppCompatActivity {
         // Log out when button is clicked.
         String option = spinner.getSelectedItem().toString();
 
-        if (option.equals("Log Out")) {
+        if (option.equals("Log uit")) {
             // Sign out in firebase.
             FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(AdvertActivity.this, MainActivity.class);
@@ -155,24 +160,32 @@ public class AdvertActivity extends AppCompatActivity {
         }
     }
 
-    public void getFromDB() {
+
+    /**
+     * Get current advert from database when already existing.
+     */
+    public void getDogFromDB() {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
              @Override
              public void onDataChange(DataSnapshot dataSnapshot) {
+
+                 // Get current user and get advert state.
                  mUser = dataSnapshot.child("users").child(id).getValue(User.class);
                  advertState = mUser.advertState;
-                 Log.w("cavia", advertState + "");
 
-                 // Check which type the current user is and go to corresponding next activity.
+                 // Check if current user already made an advert.
                  if (advertState) {
                      Log.w("Tagg", "verander bestaande advertentie");
-                     mDog = dataSnapshot.child("dogs").child(id).getValue(Dog.class);
-                     Log.w("whyy", mDog + "" );
+
+                     // Get dog of current user.
+                     mDog = dataSnapshot.child("dogs").child(id).child("dog").getValue(Dog.class);
+
+                     // Set current data of dog in layout.
                      getImage(mDog.photo, getPicture);
+                     encodedPicture = mDog.photo;
                      getDogName.setText(mDog.name);
                      getDescription.setText(mDog.description);
                  }
-
                  else {
                      Toast.makeText(AdvertActivity.this, "Maak een advertentie aan",
                              Toast.LENGTH_SHORT).show();
@@ -196,9 +209,13 @@ public class AdvertActivity extends AppCompatActivity {
         boolLocation = false;
 
         // If not already given, ask for permission to use camera.
-        if (ActivityCompat.checkSelfPermission(AdvertActivity.this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(AdvertActivity.this, new String[]{android.Manifest.permission.CAMERA}, myCameraRequestCode);
+        if (ActivityCompat.checkSelfPermission(AdvertActivity.this,
+                android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(AdvertActivity.this,
+                    new String[]{android.Manifest.permission.CAMERA}, myCameraRequestCode);
         }
+
+        // If permission already given, go to camera.
         else {
             dispatchTakePictureIntent();
         }
@@ -209,7 +226,8 @@ public class AdvertActivity extends AppCompatActivity {
      * Gets information/result out of location or camera request.
      */
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         // Check if result is asked of location or camera.
@@ -218,11 +236,13 @@ public class AdvertActivity extends AppCompatActivity {
             // If permission granted and location determined, get current location of user.
             if (requestCode == myLocationRequestCode) {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "location permission granted", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "location permission granted",
+                            Toast.LENGTH_LONG).show();
                     getLocation();
-
-                } else {
-                    Toast.makeText(this, "location permission denied", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Toast.makeText(this, "location permission denied",
+                            Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -231,11 +251,14 @@ public class AdvertActivity extends AppCompatActivity {
             // If permission granted, go to camera.
             if (requestCode == myCameraRequestCode) {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "camera permission granted",
+                            Toast.LENGTH_LONG).show();
                     dispatchTakePictureIntent();
 
-                } else {
-                    Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Toast.makeText(this, "camera permission denied",
+                            Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -265,10 +288,11 @@ public class AdvertActivity extends AppCompatActivity {
             // Show image in current activity.
             getPicture.setImageBitmap(imageBitmap);
 
-            // Encode the picture and save the picture to firebase.
+            // Encode the picture and save the picture to database.
             encodeBitmap(imageBitmap);
         }
     }
+
 
     /**
      * Encode picture to a string.
@@ -282,14 +306,17 @@ public class AdvertActivity extends AppCompatActivity {
         encodedPicture = imageEncoded;
     }
 
+
     /**
      * Get current latitude and longitude of the dog's boss.
      */
     public void getLocation() {
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
         try{
             if(mLocationPermissionsGranted){
+                makeAdvert.setEnabled(false);
+                Toast.makeText(AdvertActivity.this, "Waiting for current location",
+                        Toast.LENGTH_SHORT).show();
 
                 // Get last known location of device.
                 final Task location = mFusedLocationProviderClient.getLastLocation();
@@ -300,21 +327,27 @@ public class AdvertActivity extends AppCompatActivity {
                             Location currentLocation = (Location) task.getResult();
 
                             if (!(task.getResult() == null)) {
+
                                 // Set longitude and latitude given.
                                 latitude = currentLocation.getLatitude();
                                 longitude = currentLocation.getLongitude();
                             }
-
-                        }else{
-                            Toast.makeText(AdvertActivity.this, "unable to get current location", Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            Toast.makeText(AdvertActivity.this,
+                                    "unable to get current location",
+                                    Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
+                makeAdvert.setEnabled(true);
             }
-        }catch (SecurityException e){
+        }
+        catch (SecurityException e){
             Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage() );
         }
     }
+
 
     /**
      * Show a dialog when GPS is disabled to change GPS settings.
@@ -322,14 +355,16 @@ public class AdvertActivity extends AppCompatActivity {
     public void showSettingAlert()
     {
         // Check if GPS is enabled.
-        String locationProviders = Settings.Secure.getString(getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+        String locationProviders = Settings.Secure.getString(getContentResolver(),
+                Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
         if (locationProviders == null || locationProviders.equals("")) {
 
             // Build a dialog with the choice to change GPS settings.
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
             alertDialog.setTitle("GPS instellingen!");
             alertDialog.setMessage("GPS staat niet aan, wil je naar instellingen? ");
-            alertDialog.setPositiveButton("Instellingen", new DialogInterface.OnClickListener() {
+            alertDialog.setPositiveButton("Instellingen",
+                    new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
@@ -350,8 +385,9 @@ public class AdvertActivity extends AppCompatActivity {
         }
     }
 
+
     /**
-     * Set advert in firebase and go to next activity when button clicked.
+     * Put advert in database and go to next activity when button clicked.
      */
     public void makeAdvert(View view) {
 
@@ -359,7 +395,7 @@ public class AdvertActivity extends AppCompatActivity {
         description = getDescription.getText().toString();
         dogName = getDogName.getText().toString();
 
-        // Get firebase data.
+        // Get dog's data from database.
         mAuth = FirebaseAuth.getInstance();
 
         Dog aDog;

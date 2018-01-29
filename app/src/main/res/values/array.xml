@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
     <string-array name="spinner_choose">
-        <item>Log Out</item>
-        <item>Overview</item>
+        <item>Log uit</item>
+        <item>Uitgelaten honden</item>
     </string-array>
     <string-array name="spinner_doginfo_contact">
-        <item>Log Out</item>
-        <item>Overview</item>
-        <item>Adverts</item>
+        <item>Log uit</item>
+        <item>Uitgelaten honden</item>
+        <item>Advertenties</item>
     </string-array>
     <string-array name="spinner_overview">
-        <item>Log Out</item>
-        <item>Adverts</item>
+        <item>Log uit</item>
+        <item>Advertenties</item>
     </string-array>
     <string-array name="spinner_advert">
-        <item>Log Out</item>
+        <item>Log uit</item>
     </string-array>
     <string-array name="spinner_confirm">
-        <item>Log Out</item>
-        <item>Change advert</item>
+        <item>Log uit</item>
+        <item>Verander advertentie</item>
     </string-array>
 
 </resources>

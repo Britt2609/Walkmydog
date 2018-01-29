@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -19,59 +18,74 @@ import com.google.firebase.database.ValueEventListener;
 
 public class ContactActivity extends AppCompatActivity {
 
+    // Initialize for layout.
     Spinner spinner;
-
-    String bossID;
-    String dog;
-
     TextView boss_name;
     TextView dog_name;
     TextView email;
 
+    // Initialize user data.
+    String bossID;
+    String dog;
     User mUser;
+
+    // Initialize for database.
     DatabaseReference databaseReference;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
 
-        boss_name = findViewById(R.id.boss_name);
-        dog_name = findViewById(R.id.dog_name);
-        email = findViewById(R.id.boss_email);
+        // Get layout views.
+        boss_name = findViewById(R.id.bossName);
+        dog_name = findViewById(R.id.dogName);
+        email = findViewById(R.id.bossEmail);
+        spinner = findViewById(R.id.spinnerOptions5);
 
-        // Set spinner to be able to choose category.
-        spinner = findViewById(R.id.spinner5);
+        // Set spinner to be able to choose option.
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinner_doginfo_contact,
                 android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-
+        // Get data from intent.
         Intent intent = getIntent();
         bossID = intent.getStringExtra("bossID");
         dog = intent.getStringExtra("dog");
 
+        // Get data from database for layout.
+        databaseReference = FirebaseDatabase.getInstance().getReference();
         getFromDB();
     }
 
+
+    /**
+     * Go to selected option in spinner.
+     */
     public void SelectOption(View view) {
         String option = spinner.getSelectedItem().toString();
-        if(option.equals("Log Out"))
+
+        // Log out when button is clicked.
+        if(option.equals("Log uit"))
         {
             FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(ContactActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         }
-        else if (option.equals("Overview"))
+
+        // Go to overview when button is clicked.
+        else if (option.equals("Uitgelaten honden"))
         {
             Intent intent = new Intent(ContactActivity.this, OverviewActivity.class);
             startActivity(intent);
             finish();
         }
-        else if (option.equals("Adverts"))
+
+        // Go to adverts when button is clicked.
+        else if (option.equals("Advertenties"))
         {
             Intent intent = new Intent(ContactActivity.this, ChooseActivity.class);
             startActivity(intent);
@@ -79,11 +93,18 @@ public class ContactActivity extends AppCompatActivity {
         }
     }
 
+
+    /**
+     * Get data from the dog's boss.
+     */
     public void getFromDB() {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get the boss's data from database.
                 mUser = dataSnapshot.child("users").child(bossID).getValue(User.class);
+
+                // Set values in layout.
                 boss_name.setText("Naam baasje: " + mUser.name);
                 email.setText("Email baasje: " + mUser.email);
                 dog_name.setText("Maak contact met het baasje van " + dog);

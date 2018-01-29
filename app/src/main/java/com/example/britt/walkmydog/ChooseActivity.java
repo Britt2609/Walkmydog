@@ -39,7 +39,8 @@ public class ChooseActivity extends AppCompatActivity {
     // Initialize for database.
     private DatabaseReference databaseReference;
 
-    ArrayList<Dog> dogArray = new ArrayList<Dog>();
+    // Initialize for use of listview.
+    ArrayList<Dog> dogArray = new ArrayList<>();
     DogAdapter mAdapter;
 
     @Override
@@ -49,11 +50,11 @@ public class ChooseActivity extends AppCompatActivity {
 
         // Get layout views.
         dogList = findViewById(R.id.dogList);
-        spinner = findViewById(R.id.spinner);
+        spinner = findViewById(R.id.spinnerOptions3);
 
         // Set spinner to be able to choose option.
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinner_choose,
-                android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.spinner_choose, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
@@ -65,6 +66,7 @@ public class ChooseActivity extends AppCompatActivity {
         dogList.setOnItemClickListener(new OnItemClickListener());
     }
 
+
     /**
      * Go to selected option in spinner.
      */
@@ -72,7 +74,7 @@ public class ChooseActivity extends AppCompatActivity {
         String option = spinner.getSelectedItem().toString();
 
         // Log out when button is clicked.
-        if (option.equals("Log Out")) {
+        if (option.equals("Log uit")) {
             FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(ChooseActivity.this, MainActivity.class);
             startActivity(intent);
@@ -88,45 +90,50 @@ public class ChooseActivity extends AppCompatActivity {
         }
     }
 
+
     /**
-     * Get dtata of all dogs
+     * Get data of all dogs.
      */
     public void getFromDB() {
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+                // Iterate over all adverts of dogs.
                 Iterator<DataSnapshot> ds = dataSnapshot.child("dogs").getChildren().iterator();
                 while (ds.hasNext()) {
 
+                    // Add al dogs to an array.
                     DataSnapshot ds1 = ds.next();
-
                     Dog mDog = ds1.child("dog").getValue(Dog.class);
-
                     dogArray.add(mDog);
-
                 }
+
+                // Show dogs in ListView with custom adapter.
                 mAdapter = new DogAdapter(ChooseActivity.this, dogArray);
                 dogList.setAdapter(mAdapter);
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         };
 
         databaseReference.addValueEventListener(eventListener);
     }
 
+    /**
+     * Get data of selected dog and go to next activity with the selected dog's data.
+     */
     private class OnItemClickListener implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            // Get selected dog.
             Dog dog = (Dog) parent.getItemAtPosition(position);
-
             String bossID = dog.getId();
-            Log.w("TAGG", "hoi " + bossID);
 
+            // Go to next activity and give the boss's id to intent.
             Intent intent = new Intent(ChooseActivity.this, DogActivity.class);
             intent.putExtra("bossID", bossID);
             startActivity(intent);

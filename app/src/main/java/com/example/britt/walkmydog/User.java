@@ -2,6 +2,9 @@ package com.example.britt.walkmydog;
 
 import java.util.ArrayList;
 
+// TODO: hierin commenten en evt functies weghalen?
+
+
 /**
  * Create class for a user, with email, score and password.
  */
@@ -10,7 +13,6 @@ public class User {
     public String userType;
     public String name;
     public String email;
-    // TODO: advert_status nog weghalen!!!!!!!!!!!!!!!!
     public Boolean advertState;
     public ArrayList<Dog> favorites;
 
