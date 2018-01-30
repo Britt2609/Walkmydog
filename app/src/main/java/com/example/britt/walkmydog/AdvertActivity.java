@@ -127,6 +127,9 @@ public class AdvertActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Set spinner with corresponding options for several activities.
+     */
     static void setSpinner(Spinner spinner, Context context, Integer spinner_array) {
         // Set spinner to be able to choose an option to go to.
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context,
@@ -137,18 +140,18 @@ public class AdvertActivity extends AppCompatActivity {
 
 
     /**
-     *
+     * If not already given, ask for permission to use location.
+     * If not already turned on, ask user to turn on location.
      */
     public void getLocationPermission() {
-        /* If not already given, ask for permission to use location.
-        If not already turned on, ask user to turn on location. */
+        // Get permission to use location.
         if (ActivityCompat.checkSelfPermission(AdvertActivity.this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(AdvertActivity.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, myLocationRequestCode);
             showSettingAlert();
         }
-        // TODO: comment hier zetten?
+
         else {
             if (boolLocation) {
                 showSettingAlert();
@@ -246,6 +249,16 @@ public class AdvertActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         // Check if result is asked of location or camera.
+        checkLocation(requestCode, grantResults);
+        checkCamera(requestCode, grantResults);
+    }
+
+
+    /**
+     * Check if result is asked of location.
+     * If so, get location.
+     */
+    public void checkLocation(int requestCode, @NonNull int[] grantResults) {
         if (boolLocation) {
 
             // If permission granted and location determined, get current location of user.
@@ -261,7 +274,14 @@ public class AdvertActivity extends AppCompatActivity {
                 }
             }
         }
+    }
 
+
+    /**
+     * Check if result is asked of camera.
+     * If so, go to camera.
+     */
+    public void checkCamera(int requestCode, @NonNull int[] grantResults) {
         if (boolCamera) {
             // If permission granted, go to camera.
             if (requestCode == myCameraRequestCode) {
