@@ -16,12 +16,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import static com.example.britt.walkmydog.AdvertActivity.setSpinner;
+
 public class ContactActivity extends AppCompatActivity {
 
     // Initialize for layout.
     Spinner spinner;
-    TextView boss_name;
-    TextView dog_name;
+    TextView bossName;
+    TextView dogName;
     TextView email;
 
     // Initialize user data.
@@ -39,16 +41,14 @@ public class ContactActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contact);
 
         // Get layout views.
-        boss_name = findViewById(R.id.bossName);
-        dog_name = findViewById(R.id.dogName);
+        bossName = findViewById(R.id.bossName);
+        dogName = findViewById(R.id.dogName);
         email = findViewById(R.id.bossEmail);
         spinner = findViewById(R.id.spinnerOptions5);
 
+
         // Set spinner to be able to choose option.
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinner_doginfo_contact,
-                android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        setSpinner(spinner, this, R.array.spinner_doginfo_contact);
 
         // Get data from intent.
         Intent intent = getIntent();
@@ -67,29 +67,28 @@ public class ContactActivity extends AppCompatActivity {
     public void SelectOption(View view) {
         String option = spinner.getSelectedItem().toString();
 
-        // Log out when button is clicked.
-        if(option.equals("Log uit"))
-        {
-            FirebaseAuth.getInstance().signOut();
-            Intent intent = new Intent(ContactActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
+        switch(option) {
+            // Log out when button is clicked.
+            case ("Log uit"):
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(ContactActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                break;
 
-        // Go to overview when button is clicked.
-        else if (option.equals("Uitgelaten honden"))
-        {
-            Intent intent = new Intent(ContactActivity.this, OverviewActivity.class);
-            startActivity(intent);
-            finish();
-        }
+            // Go to overview when button is clicked.
+            case ("Uitgelaten honden"):
+                Intent intent2 = new Intent(ContactActivity.this, OverviewActivity.class);
+                startActivity(intent2);
+                finish();
+                break;
 
-        // Go to adverts when button is clicked.
-        else if (option.equals("Advertenties"))
-        {
-            Intent intent = new Intent(ContactActivity.this, ChooseActivity.class);
-            startActivity(intent);
-            finish();
+            // Go to adverts when button is clicked.
+            case ("Advertenties"):
+                Intent intent3 = new Intent(ContactActivity.this, ChooseActivity.class);
+                startActivity(intent3);
+                finish();
+                break;
         }
     }
 
@@ -105,9 +104,9 @@ public class ContactActivity extends AppCompatActivity {
                 mUser = dataSnapshot.child("users").child(bossID).getValue(User.class);
 
                 // Set values in layout.
-                boss_name.setText("Naam baasje: " + mUser.name);
+                bossName.setText("Naam baasje: " + mUser.name);
                 email.setText("Email baasje: " + mUser.email);
-                dog_name.setText("Maak contact met het baasje van " + dog);
+                dogName.setText("Maak contact met het baasje van " + dog);
             }
 
             @Override

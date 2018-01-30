@@ -27,6 +27,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import static com.example.britt.walkmydog.AdvertActivity.setSpinner;
+
 public class ChooseActivity extends AppCompatActivity {
 
     // Initialize layout.
@@ -53,10 +55,7 @@ public class ChooseActivity extends AppCompatActivity {
         spinner = findViewById(R.id.spinnerOptions3);
 
         // Set spinner to be able to choose option.
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.spinner_choose, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        setSpinner(spinner, this, R.array.spinner_choose);
 
         // Get information out of database.
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -67,26 +66,28 @@ public class ChooseActivity extends AppCompatActivity {
     }
 
 
+
+
     /**
      * Go to selected option in spinner.
      */
     public void SelectOption(View view) {
         String option = spinner.getSelectedItem().toString();
+        switch(option) {
+            // Log out when button is clicked.
+            case ("Log uit"):
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(ChooseActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                break;
 
-        // Log out when button is clicked.
-        if (option.equals("Log uit")) {
-            FirebaseAuth.getInstance().signOut();
-            Intent intent = new Intent(ChooseActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
-
-        // Go to overview when button is clicked.
-        else if (option.equals("Overview"))
-        {
-            Intent intent = new Intent(ChooseActivity.this, OverviewActivity.class);
-            startActivity(intent);
-            finish();
+            // Go to overview when button is clicked.
+            case ("Uitgelaten honden"):
+                Intent intent2 = new Intent(ChooseActivity.this, OverviewActivity.class);
+                startActivity(intent2);
+                finish();
+                break;
         }
     }
 

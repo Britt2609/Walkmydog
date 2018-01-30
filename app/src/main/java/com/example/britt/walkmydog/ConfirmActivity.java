@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import static com.example.britt.walkmydog.AdvertActivity.setSpinner;
 import static com.example.britt.walkmydog.DogActivity.getImage;
 
 public class ConfirmActivity extends AppCompatActivity {
@@ -34,11 +35,9 @@ public class ConfirmActivity extends AppCompatActivity {
         dogName = findViewById(R.id.dogName);
         photo = findViewById(R.id.photo);
 
+
         // Set spinner to be able to choose option.
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.spinner_confirm, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        setSpinner(spinner, this, R.array.spinner_confirm);
 
         // Get data from intent en set to layout.
         Intent intent = getIntent();
@@ -54,22 +53,23 @@ public class ConfirmActivity extends AppCompatActivity {
      */
     public void SelectOption(View view) {
         String option = spinner.getSelectedItem().toString();
+        switch(option) {
+            // Log out when button is clicked.
+            case ("Log uit"):
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(ConfirmActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                break;
 
-        // Log out when button is clicked.
-        if(option.equals("Log uit"))
-        {
-            FirebaseAuth.getInstance().signOut();
-            Intent intent = new Intent(ConfirmActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
 
-        // Go to change advert when button is clicked.
-        else if (option.equals("Verander advertentie"))
-        {
-            Intent intent = new Intent(ConfirmActivity.this, AdvertActivity.class);
-            startActivity(intent);
-            finish();
+            // Go to change advert when button is clicked.
+            case ("Verander advertentie"):
+                Intent intent2 = new Intent(ConfirmActivity.this, AdvertActivity.class);
+                startActivity(intent2);
+                finish();
+                break;
+
         }
     }
 }

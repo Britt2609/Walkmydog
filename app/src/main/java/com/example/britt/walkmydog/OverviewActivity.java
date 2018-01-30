@@ -24,6 +24,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import static com.example.britt.walkmydog.AdvertActivity.setSpinner;
+
 public class OverviewActivity extends AppCompatActivity {
 
     // Initialize for firebase.
@@ -52,11 +54,9 @@ public class OverviewActivity extends AppCompatActivity {
         spinner = findViewById(R.id.spinnerOptions6);
         dogList = findViewById(R.id.dogList);
 
+
         // Set spinner to be able to choose option.
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinner_overview,
-                android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        setSpinner(spinner, this, R.array.spinner_overview);
 
         // Get database ready to use.
         mAuth = FirebaseAuth.getInstance();
@@ -78,21 +78,21 @@ public class OverviewActivity extends AppCompatActivity {
     public void SelectOption(View view) {
         String option = spinner.getSelectedItem().toString();
 
-        // Log out when button is clicked.
-        if(option.equals("Log uit"))
-        {
-            FirebaseAuth.getInstance().signOut();
-            Intent intent = new Intent(OverviewActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
+        switch(option) {
+            // Log out when button is clicked.
+            case ("Log uit"):
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(OverviewActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                break;
 
-        // Go to adverts when button is clicked.
-        else if (option.equals("Advertenties"))
-        {
-            Intent intent = new Intent(OverviewActivity.this, ChooseActivity.class);
-            startActivity(intent);
-            finish();
+            // Go to adverts when button is clicked.
+            case ("Advertenties"):
+                Intent intent2 = new Intent(OverviewActivity.this, ChooseActivity.class);
+                startActivity(intent2);
+                finish();
+                break;
         }
     }
 

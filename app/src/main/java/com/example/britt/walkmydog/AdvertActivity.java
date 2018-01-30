@@ -22,6 +22,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -46,6 +47,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Array;
 import java.util.Calendar;
 
 import static com.example.britt.walkmydog.DogActivity.getImage;
@@ -109,13 +111,35 @@ public class AdvertActivity extends AppCompatActivity {
         spinner = findViewById(R.id.spinnerOptions1);
         makeAdvert = findViewById(R.id.makeAdvert);
 
-        // Set spinner to be able to choose option.
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.spinner_advert, android.R.layout.simple_spinner_item);
+        // Set spinner to choose option.
+        setSpinner(spinner, this, R.array.spinner_advert);
+
+        getLocationPermission();
+
+        // Set database ready to use.
+        mAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        id = mAuth.getCurrentUser().getUid();
+
+        // Get current dog from user when existing.
+        getDogFromDB();
+    }
+
+
+    static void setSpinner(Spinner spinner, Context context, Integer spinner_array) {
+        // Set spinner to be able to choose an option to go to.
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context,
+                spinner_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+    }
 
 
+    /**
+     *
+     */
+    public void getLocationPermission() {
         /* If not already given, ask for permission to use location.
         If not already turned on, ask user to turn on location. */
         if (ActivityCompat.checkSelfPermission(AdvertActivity.this,
@@ -132,15 +156,6 @@ public class AdvertActivity extends AppCompatActivity {
             mLocationPermissionsGranted = true;
             getLocation();
         }
-
-        // Set database ready to use.
-        mAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-
-        id = mAuth.getCurrentUser().getUid();
-
-        // Get current dog from user when existing.
-        getDogFromDB();
     }
 
 
@@ -343,7 +358,7 @@ public class AdvertActivity extends AppCompatActivity {
             }
         }
         catch (SecurityException e){
-//            Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage() );
+            Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage() );
         }
     }
 
