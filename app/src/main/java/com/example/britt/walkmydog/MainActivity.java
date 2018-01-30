@@ -96,18 +96,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     public void logIn() {
 
-        // Get input from user.
-        email = getEmail.getText().toString();
-        password = getPassword.getText().toString();
-
-        // Check if email and password are filled in.
-        if (email.equals("") || password.equals("")) {
-            Toast.makeText(MainActivity.this, "Vul aub alle velden in!",
-                    Toast.LENGTH_SHORT).show();
-        }
-
-        // Check if input is correct and sign in with firebase.
-        else {
+        // Check if input is correct.
+        if (checkInput()) {
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -136,6 +126,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                     });
         }
+    }
+
+
+    /**
+     * Checks if input is correct and returns boolean.
+     */
+    public boolean checkInput () {
+        // Get input from user.
+        email = getEmail.getText().toString();
+        password = getPassword.getText().toString();
+
+        // Check if email and password are filled in.
+        if (email.equals("") || password.equals("")) {
+            Toast.makeText(MainActivity.this, "Vul aub alle velden in!",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 
 
