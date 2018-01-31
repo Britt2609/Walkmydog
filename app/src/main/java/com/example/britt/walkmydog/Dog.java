@@ -1,7 +1,9 @@
 package com.example.britt.walkmydog;
 
-// TODO: hierin commenten en evt functies weghalen?
 
+/**
+ * Create class for a dog, with name, description, photo, owner's id and location.
+ */
 public class Dog {
     public String name;
     public String description;
@@ -21,24 +23,10 @@ public class Dog {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
+    /**
+     * Use to check if a dog is already in favorites list.
+     */
     @Override
     public boolean equals(Object obj) {
         boolean retVal = false;
@@ -53,7 +41,8 @@ public class Dog {
         return retVal;
     }
 
-    /* https://stackoverflow.com/questions/8322129/arraylists-custom-contains-method */
+    /* I got this code from:
+    https://stackoverflow.com/questions/8322129/arraylists-custom-contains-method */
     @Override
     public int hashCode() {
         int hash = 7;

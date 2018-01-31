@@ -1,15 +1,16 @@
 package com.example.britt.walkmydog;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,19 +21,19 @@ import static com.example.britt.walkmydog.AdvertActivity.setSpinner;
 
 public class ContactActivity extends AppCompatActivity {
 
-    // Initialize for layout.
     Spinner spinner;
-    TextView bossName;
+    TextView ownerName;
     TextView dogName;
     TextView email;
 
     // Initialize user data.
-    String bossID;
+    String ownerID;
     String dog;
     User mUser;
 
     // Initialize for database.
     DatabaseReference databaseReference;
+    private FirebaseAuth.AuthStateListener authStateListener;
 
 
     @Override
@@ -40,24 +41,43 @@ public class ContactActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
 
-        // Get layout views.
-        bossName = findViewById(R.id.bossName);
-        dogName = findViewById(R.id.dogName);
-        email = findViewById(R.id.bossEmail);
-        spinner = findViewById(R.id.spinnerOptions5);
+        checkAuthentication();
 
+        ownerName = findViewById(R.id.ownerName);
+        dogName = findViewById(R.id.dogName);
+        email = findViewById(R.id.ownerEmail);
+        spinner = findViewById(R.id.spinnerOptions5);
 
         // Set spinner to be able to choose option.
         setSpinner(spinner, this, R.array.spinner_doginfo_contact);
 
         // Get data from intent.
         Intent intent = getIntent();
-        bossID = intent.getStringExtra("bossID");
+        ownerID = intent.getStringExtra("ownerID");
         dog = intent.getStringExtra("dog");
 
         // Get data from database for layout.
         databaseReference = FirebaseDatabase.getInstance().getReference();
         getFromDB();
+    }
+
+
+    /**
+     * Check if user is signed and has access to this activity.
+     */
+    public void checkAuthentication() {
+        // Check if user is signed in.
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    Intent intent = new Intent(ContactActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        };
     }
 
 
@@ -94,17 +114,17 @@ public class ContactActivity extends AppCompatActivity {
 
 
     /**
-     * Get data from the dog's boss.
+     * Get data from the dog's owner.
      */
     public void getFromDB() {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get the boss's data from database.
-                mUser = dataSnapshot.child("users").child(bossID).getValue(User.class);
+                // Get the owner's data from database.
+                mUser = dataSnapshot.child("users").child(ownerID).getValue(User.class);
 
                 // Set values in layout.
-                bossName.setText("Naam baasje: " + mUser.name);
+                ownerName.setText("Naam baasje: " + mUser.name);
                 email.setText("Email baasje: " + mUser.email);
                 dogName.setText("Maak contact met het baasje van " + dog);
             }

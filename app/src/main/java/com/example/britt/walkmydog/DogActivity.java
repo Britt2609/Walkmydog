@@ -3,12 +3,12 @@ package com.example.britt.walkmydog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -21,6 +21,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,14 +34,13 @@ import static com.example.britt.walkmydog.AdvertActivity.setSpinner;
 
 public class DogActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    // Initialize layout.
     Spinner spinner;
     TextView nameText;
     TextView descriptionText;
     ImageView picture;
 
     // Initialize dog's data.
-    String bossID;
+    String ownerID;
     Double lat;
     Double lon;
     String dog;
@@ -57,6 +57,7 @@ public class DogActivity extends AppCompatActivity implements OnMapReadyCallback
 
     // Initialize for database.
     private DatabaseReference databaseReference;
+    private FirebaseAuth.AuthStateListener authStateListener;
     private FirebaseAuth mAuth;
 
 
@@ -65,7 +66,8 @@ public class DogActivity extends AppCompatActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dog);
 
-        // Initialize layout views
+        checkAuthentication();
+
         nameText = findViewById(R.id.dogName);
         descriptionText = findViewById(R.id.description);
         picture = findViewById(R.id.photo);
@@ -75,17 +77,35 @@ public class DogActivity extends AppCompatActivity implements OnMapReadyCallback
         databaseReference = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         id = mAuth.getCurrentUser().getUid();
-
-
+        
         // Set spinner to be able to choose option.
         setSpinner(spinner, this, R.array.spinner_doginfo_contact);
 
         // Get data from intent.
         Intent intent = getIntent();
-        bossID = intent.getStringExtra("bossID");
+        ownerID = intent.getStringExtra("ownerID");
 
         // Get dog's data from database.
         getFromDB();
+    }
+
+
+    /**
+     * Check if user is signed and has access to this activity.
+     */
+    public void checkAuthentication() {
+        // Check if user is signed in.
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    Intent intent = new Intent(DogActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        };
     }
 
 
@@ -108,7 +128,7 @@ public class DogActivity extends AppCompatActivity implements OnMapReadyCallback
             location = new LatLng(lat, lon);
 
             mMap.addMarker(new MarkerOptions().position(location)
-                    .title("Location of the dog's boss"));
+                    .title("Location of the dog's owner"));
 
             // Zoom to the location.
             mMap.getUiSettings().setZoomControlsEnabled(true);
@@ -160,7 +180,7 @@ public class DogActivity extends AppCompatActivity implements OnMapReadyCallback
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 // Get dog's information from database.
-                mDog = dataSnapshot.child("dogs").child(bossID).child("dog").getValue(Dog.class);
+                mDog = dataSnapshot.child("dogs").child(ownerID).child("dog").getValue(Dog.class);
                 dog = mDog.name;
 
                 // Set data in layout.
@@ -208,7 +228,7 @@ public class DogActivity extends AppCompatActivity implements OnMapReadyCallback
 
                 // If list is empty, create a list and add the dog.
                 else {
-                    Log.d("else array", mDog.getName());
+                    Log.d("else array", mDog.name);
                     favo = new ArrayList<>();
                     favo.add(mDog);
                 }
@@ -247,7 +267,7 @@ public class DogActivity extends AppCompatActivity implements OnMapReadyCallback
     public void makeAppointment(View view) {
         Intent intent = new Intent(DogActivity.this, ContactActivity.class);
         setFavorites();
-        intent.putExtra("bossID", bossID);
+        intent.putExtra("ownerID", ownerID);
         intent.putExtra("dog", dog);
         startActivity(intent);
     }

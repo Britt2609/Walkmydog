@@ -51,24 +51,24 @@
         android:layout_marginStart="8dp"
         android:text="@string/Make_contact"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/bossName"
+        app:layout_constraintBottom_toTopOf="@+id/ownerName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/bossName"
+        android:id="@+id/ownerName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/bossEmail"
+        app:layout_constraintBottom_toTopOf="@+id/ownerEmail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/bossEmail"
+        android:id="@+id/ownerEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="68dp"

@@ -1,60 +1,44 @@
 package com.example.britt.walkmydog;
 
-import android.*;
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Looper;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.provider.SyncStateContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.text.Layout;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.ByteArrayOutputStream;
-import java.lang.reflect.Array;
-import java.util.Calendar;
 
 import static com.example.britt.walkmydog.DogActivity.getImage;
-import static java.lang.Double.valueOf;
-
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.firebase.database.ValueEventListener;
 
 
 public class AdvertActivity extends AppCompatActivity {
@@ -70,7 +54,6 @@ public class AdvertActivity extends AppCompatActivity {
     User mUser;
     Dog mDog;
 
-    // Initialize for layout.
     ImageView getPicture;
     Spinner spinner;
     EditText getDogName;
@@ -79,6 +62,7 @@ public class AdvertActivity extends AppCompatActivity {
 
     // Initialize for database.
     private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener authStateListener;
     private DatabaseReference databaseReference;
 
     // Set values for use of camera.
@@ -104,7 +88,8 @@ public class AdvertActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_advert);
 
-        // Get layout views.
+        checkAuthentication();
+
         getDogName = findViewById(R.id.dogName);
         getDescription = findViewById(R.id.description);
         getPicture = findViewById(R.id.picture);
@@ -128,10 +113,29 @@ public class AdvertActivity extends AppCompatActivity {
 
 
     /**
+     * Check if user is signed and has access to this activity.
+     */
+    public void checkAuthentication() {
+        // Check if user is signed in.
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    Intent intent = new Intent(AdvertActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        };
+    }
+
+
+    /**
      * Set spinner with corresponding options for several activities.
      */
     static void setSpinner(Spinner spinner, Context context, Integer spinner_array) {
-        // Set spinner to be able to choose an option to go to.
+        // Set spinner to be able to choose an activity to go to.
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context,
                 spinner_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -152,6 +156,7 @@ public class AdvertActivity extends AppCompatActivity {
             showSettingAlert();
         }
 
+        // Check if phone's location is enabled.
         else {
             if (boolLocation) {
                 showSettingAlert();
@@ -186,6 +191,8 @@ public class AdvertActivity extends AppCompatActivity {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
              @Override
              public void onDataChange(DataSnapshot dataSnapshot) {
+
+                 Log.d("ID in getdogfromdb", String.valueOf(id));
 
                  // Get current user and get advert state.
                  mUser = dataSnapshot.child("users").child(id).getValue(User.class);
@@ -249,8 +256,12 @@ public class AdvertActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         // Check if result is asked of location or camera.
-        checkLocation(requestCode, grantResults);
-        checkCamera(requestCode, grantResults);
+        if (boolLocation) {
+            checkLocation(requestCode, grantResults);
+        }
+        if (boolCamera) {
+            checkCamera(requestCode, grantResults);
+        }
     }
 
 
@@ -259,42 +270,48 @@ public class AdvertActivity extends AppCompatActivity {
      * If so, get location.
      */
     public void checkLocation(int requestCode, @NonNull int[] grantResults) {
-        if (boolLocation) {
 
-            // If permission granted and location determined, get current location of user.
-            if (requestCode == myLocationRequestCode) {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "location permission granted",
-                            Toast.LENGTH_LONG).show();
-                    getLocation();
-                }
-                else {
-                    Toast.makeText(this, "location permission denied",
-                            Toast.LENGTH_LONG).show();
-                }
+        // If permission granted and location determined, get current location of user.
+        if (requestCode == myLocationRequestCode) {
+
+            // Check if location permission is asked correctly.
+            if(grantResults.length == 0) {
+                Toast.makeText(this, "something went wrong, retrying",
+                        Toast.LENGTH_LONG).show();
+                getLocationPermission();
+            }
+
+            // Check if permission granted.
+            else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "location permission granted",
+                        Toast.LENGTH_LONG).show();
+                getLocation();
+            }
+            else {
+                Toast.makeText(this, "location permission denied",
+                        Toast.LENGTH_LONG).show();
+
             }
         }
     }
 
 
     /**
-     * Check if result is asked of camera.
-     * If so, go to camera.
+     * Check if result is asked of camera. If so, go to camera.
      */
     public void checkCamera(int requestCode, @NonNull int[] grantResults) {
-        if (boolCamera) {
-            // If permission granted, go to camera.
-            if (requestCode == myCameraRequestCode) {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "camera permission granted",
-                            Toast.LENGTH_LONG).show();
-                    dispatchTakePictureIntent();
 
-                }
-                else {
-                    Toast.makeText(this, "camera permission denied",
-                            Toast.LENGTH_LONG).show();
-                }
+        // If permission granted, go to camera.
+        if (requestCode == myCameraRequestCode) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "camera permission granted",
+                        Toast.LENGTH_LONG).show();
+                dispatchTakePictureIntent();
+
+            }
+            else {
+                Toast.makeText(this, "camera permission denied",
+                        Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -386,8 +403,7 @@ public class AdvertActivity extends AppCompatActivity {
     /**
      * Show a dialog when GPS is disabled to change GPS settings.
      */
-    public void showSettingAlert()
-    {
+    public void showSettingAlert() {
         // Check if GPS is enabled.
         String locationProviders = Settings.Secure.getString(getContentResolver(),
                 Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
@@ -429,20 +445,28 @@ public class AdvertActivity extends AppCompatActivity {
         description = getDescription.getText().toString();
         dogName = getDogName.getText().toString();
 
-        // Get dog's data from database.
-        mAuth = FirebaseAuth.getInstance();
+        if (description.equals("") || dogName.equals("")) {
+            Toast.makeText(this, "Please fill in all fields!", Toast.LENGTH_LONG).show();
+        }
+        else {
+            // Get dog's data from database.
+            mAuth = FirebaseAuth.getInstance();
 
-        Dog aDog;
-        aDog = new Dog(dogName, description, encodedPicture, latitude, longitude, id);
+            Dog aDog;
+            aDog = new Dog(dogName, description, encodedPicture, latitude, longitude, id);
 
-        // Change advert status and set dog into database.
-        databaseReference.child("users").child(id).child("advert_status").setValue(true);
-        databaseReference.child("dogs").child(id).child("dog").setValue(aDog);
+            // Change advert status and set dog into database.
+            databaseReference.child("users").child(id).child("advertState").setValue(true);
+            databaseReference.child("dogs").child(id).child("dog").setValue(aDog);
 
-        // Go to next activity to confirm the processing of the advert.
-        Intent intent = new Intent(AdvertActivity.this, ConfirmActivity.class);
-        intent.putExtra("name", dogName);
-        intent.putExtra("photo", encodedPicture);
-        startActivity(intent);
+            getDescription.setText("");
+            getDogName.setText("");
+
+            // Go to next activity to confirm the processing of the advert.
+            Intent intent = new Intent(AdvertActivity.this, ConfirmActivity.class);
+            intent.putExtra("name", dogName);
+            intent.putExtra("photo", encodedPicture);
+            startActivity(intent);
+        }
     }
 }

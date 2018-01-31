@@ -1,9 +1,9 @@
 package com.example.britt.walkmydog;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String id;
     String type;
 
-    // Initialize layout.
     Button login;
     Button userEmail;
     EditText getEmail;
@@ -50,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         // Set listeners on buttons for logging in and go to creating an account.
         login = findViewById(R.id.login);
         login.setOnClickListener(this);
@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        // Get input of user.
         getEmail = findViewById(R.id.getEmail);
         getPassword = findViewById(R.id.getPassword);
 
@@ -148,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     /**
-     * Get user data from database and sent user to next corresponding activity
+     * Get user data from database and sent user to next corresponding activity.
      */
     public void sentToNext() {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {

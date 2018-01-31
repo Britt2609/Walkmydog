@@ -1,36 +1,38 @@
 package com.example.britt.walkmydog;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import static com.example.britt.walkmydog.AdvertActivity.setSpinner;
 import static com.example.britt.walkmydog.DogActivity.getImage;
 
 public class ConfirmActivity extends AppCompatActivity {
 
-    // Initialize dog data.
     String picture;
     String dogNameText;
 
-    // Initialize for layout.
     ImageView photo;
     TextView dogName;
     Spinner spinner;
+
+    private FirebaseAuth.AuthStateListener authStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm);
 
-        // Get layout views.
+        checkAuthentication();
+
         spinner = findViewById(R.id.spinnerOptions2);
         dogName = findViewById(R.id.dogName);
         photo = findViewById(R.id.photo);
@@ -45,6 +47,25 @@ public class ConfirmActivity extends AppCompatActivity {
         dogNameText = intent.getStringExtra("name");
         dogName.setText(dogNameText);
         getImage(picture, photo);
+    }
+
+
+    /**
+     * Check if user is signed and has access to this activity.
+     */
+    public void checkAuthentication() {
+        // Check if user is signed in.
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    Intent intent = new Intent(ConfirmActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        };
     }
 
 

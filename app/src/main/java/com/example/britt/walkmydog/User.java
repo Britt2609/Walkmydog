@@ -2,13 +2,10 @@ package com.example.britt.walkmydog;
 
 import java.util.ArrayList;
 
-// TODO: hierin commenten en evt functies weghalen?
-
 
 /**
- * Create class for a user, with email, score and password.
+ * Create class for a user, with email, name, user type, advert state and a list of walked dogs.
  */
-
 public class User {
     public String userType;
     public String name;
@@ -23,46 +20,6 @@ public class User {
         this.name = name;
         this.email = email;
         this.advertState = advertState;
-        this.favorites = favorites;
-    }
-
-    public String getUserType() {
-        return userType;
-    }
-
-    public void setUserType(String userType) {
-        this.userType = userType;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Boolean getAdvert_status() {
-        return advertState;
-    }
-
-    public void setAdvert_status(Boolean advert_status) {
-        this.advertState = advert_status;
-    }
-
-    public ArrayList<Dog> getFavorites() {
-        return favorites;
-    }
-
-    public void setFavorites(ArrayList<Dog> favorites) {
         this.favorites = favorites;
     }
 }

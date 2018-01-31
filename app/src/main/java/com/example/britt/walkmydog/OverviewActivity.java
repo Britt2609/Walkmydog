@@ -2,13 +2,13 @@ package com.example.britt.walkmydog;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -33,7 +33,6 @@ public class OverviewActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener authStateListener;
     private DatabaseReference databaseReference;
 
-    // Initialize layout.
     Spinner spinner;
     ListView dogList;
 
@@ -50,10 +49,10 @@ public class OverviewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_overview);
 
-        // Get layout views.
+        checkAuthentication();
+
         spinner = findViewById(R.id.spinnerOptions6);
         dogList = findViewById(R.id.dogList);
-
 
         // Set spinner to be able to choose option.
         setSpinner(spinner, this, R.array.spinner_overview);
@@ -69,6 +68,25 @@ public class OverviewActivity extends AppCompatActivity {
 
         // Set listener on dogs to go to activity with dog's information.
         dogList.setOnItemClickListener(new OnItemClickListener());
+    }
+
+
+    /**
+     * Check if user is signed and has access to this activity.
+     */
+    public void checkAuthentication() {
+        // Check if user is signed in.
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    Intent intent = new Intent(OverviewActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        };
     }
 
 
@@ -168,11 +186,11 @@ public class OverviewActivity extends AppCompatActivity {
 
             // Get selected dog.
             Dog dog = (Dog) parent.getItemAtPosition(position);
-            String bossID = dog.getId();
+            String ownerID = dog.id;
 
-            // Go to next activity and give the boss's id to intent.
+            // Go to next activity and give the owner's id to intent.
             Intent intent = new Intent(OverviewActivity.this, DogActivity.class);
-            intent.putExtra("bossID", bossID);
+            intent.putExtra("ownerID", ownerID);
             startActivity(intent);
         }
     }
@@ -190,9 +208,8 @@ public class OverviewActivity extends AppCompatActivity {
                 User user = dataSnapshot.child("users").child(id).getValue(User.class);
 
                 // Set favorites list empty in database.
-                ArrayList<Dog> doggies = null;
-                user.favorites = doggies;
-                dogArray= doggies;
+                user.favorites = null;
+                dogArray = new ArrayList<Dog>();
                 databaseReference.child("users").child(id).setValue(user);
 
                 // Update ListView in current activity.

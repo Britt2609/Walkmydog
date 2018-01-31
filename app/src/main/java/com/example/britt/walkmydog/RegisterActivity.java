@@ -1,9 +1,9 @@
 package com.example.britt.walkmydog;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,12 +15,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class RegisterActivity extends AppCompatActivity {
@@ -43,7 +40,6 @@ public class RegisterActivity extends AppCompatActivity {
     String id;
     String type = "";
 
-    // Initialize for layout.
     Button goBack;
     EditText getEmail;
     EditText getPassword;
@@ -59,7 +55,6 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        // Get layout views.
         goBack = findViewById(R.id.goBack);
         getEmail = findViewById(R.id.getEmail);
         getPassword = findViewById(R.id.getPassword);
@@ -117,7 +112,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
                                 Toast.makeText(RegisterActivity.this,
-                                        "Inloggen niet gelukt!", Toast.LENGTH_SHORT).show();
+                                        "Email is al in gebruik of email is ongeldig!", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -159,6 +154,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Get current user's id.
         id = mAuth.getCurrentUser().getUid();
+        Log.d("userID in register", String.valueOf(id));
 
         // Create new user and put in database.
         User aUser;
