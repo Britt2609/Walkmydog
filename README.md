@@ -18,7 +18,7 @@ Verder wordt er gebruik gemaakt van firebase als database om alle gegevens van d
 * Gebruik van base 64:
   https://stackoverflow.com/questions/4830711/how-to-convert-a-image-into-base64-string
   https://gist.github.com/WrathChaos/80cd7e613cd7577dae9326e3cd75e4be
-* Neerzetten van de map met google api:
+* Neerzetten van de map met google api (Apache License 2.0):
   https://github.com/googlemaps/android-samples/blob/master/AndroidWearMap/Wearable/src/main/java/com/example/androidwearmap/MainActivity.java
 * Gebruiken van de camera:
   https://developer.android.com/training/camera/photobasics.html
