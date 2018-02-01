@@ -6,15 +6,15 @@ Je kan een account aanmaken en daarbij aangeven of je een hondenbaasje bent of e
 Deze app is alleen beschikbaar in portrait modus. De landscape modus is niet meegenomen omdat dit geen toegevoegde waarde heeft bij deze app.
 
 #### Screenshots:
-<img src="doc/screenshot_login.jpeg" alt="screenshot MainActivity" width="900" height="600"/>
-<img src="doc/screenshot_register.jpeg" alt="screenshot RegisterActivity" width="900" height="600"/>
-<img src="doc/screenshot_login.screenshot_advert" alt="screenshot AdvertActivity" width="900" height="600"/>
-<img src="doc/screenshot_advert_dialog.jpeg" alt="screenshot AdvertActivity met dialog voor gps" width="900" height="600"/>
-<img src="doc/screenshot_confirm.jpeg" alt="screenshot ConfirmActivity" width="900" height="600"/>
-<img src="doc/screenshot_choose.jpeg" alt="screenshot ChooseActivity" width="900" height="600"/>
-<img src="doc/screenshot_dog.jpeg" alt="screenshot DogActivity" width="900" height="600"/>
-<img src="doc/screenshot_contact_spinner.jpeg" alt="screenshot ContactActivity" width="900" height="600"/>
-<img src="doc/screenshot_overview.jpeg" alt="screenshot OverviewActivity" width="900" height="600"/>
+<img src="doc/screenshot_login.jpeg" alt="screenshot MainActivity" width="450" height="600"/>
+<img src="doc/screenshot_register.jpeg" alt="screenshot RegisterActivity" width="450" height="600"/>
+<img src="doc/screenshot_login.screenshot_advert" alt="screenshot AdvertActivity" width="450" height="600"/>
+<img src="doc/screenshot_advert_dialog.jpeg" alt="screenshot AdvertActivity met dialog voor gps" width="450" height="600"/>
+<img src="doc/screenshot_confirm.jpeg" alt="screenshot ConfirmActivity" width="450" height="600"/>
+<img src="doc/screenshot_choose.jpeg" alt="screenshot ChooseActivity" width="450" height="600"/>
+<img src="doc/screenshot_dog.jpeg" alt="screenshot DogActivity" width="450" height="600"/>
+<img src="doc/screenshot_contact_spinner.jpeg" alt="screenshot ContactActivity" width="450" height="600"/>
+<img src="doc/screenshot_overview.jpeg" alt="screenshot OverviewActivity" width="450" height="600"/>
 
 ## Een aantal interessante punten:
 In deze app wordt gps gebruikt om de locatie van een baasje te verkrijgen.
