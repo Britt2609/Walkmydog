@@ -5,11 +5,20 @@ Je kan een account aanmaken en daarbij aangeven of je een hondenbaasje bent of e
 
 Deze app is alleen beschikbaar in portrait modus. De landscape modus is niet meegenomen omdat dit geen toegevoegde waarde heeft bij deze app.
 
-#### Screenshots:
+### Screenshots:
 <img src="doc/screenshot_login.jpeg" alt="screenshot MainActivity" width="200" height="300"/> <img src="doc/screenshot_register.jpeg" alt="screenshot RegisterActivity" width="200" height="300"/> <img src="doc/screenshot_advert.jpeg" alt="screenshot AdvertActivity" width="200" height="300"/> <img src="doc/screenshot_confirm.jpeg" alt="screenshot ConfirmActivity" width="200" height="300"/> <img src="doc/screenshot_choose.jpeg" alt="screenshot ChooseActivity" width="200" height="300"/> <img src="doc/screenshot_dog.jpeg" alt="screenshot DogActivity" width="200" height="300"/> <img src="doc/screenshot_contact_spinner.jpeg" alt="screenshot ContactActivity" width="200" height="300"/> <img src="doc/screenshot_overview.jpeg" alt="screenshot OverviewActivity" width="200" height="300"/>
 
-## Een aantal interessante punten:
+### Een aantal interessante punten:
 In deze app wordt gps gebruikt om de locatie van een baasje te verkrijgen.
 Vervolgens wordt de API voor google maps gebruikt om de locatie te laten zien aan de uitlater.
 De app maakt ook gebruik van de camera van de gebruiker (baasje).
 Verder wordt er gebruik gemaakt van firebase als database om alle gegevens van de gebruikers op te slaan.
+
+### Extern vergregen code:
+* Het gebruik van base 64:
+  https://stackoverflow.com/questions/4830711/how-to-convert-a-image-into-base64-string
+  https://gist.github.com/WrathChaos/80cd7e613cd7577dae9326e3cd75e4be
+* Het neerzetten van de map met google api:
+  https://github.com/googlemaps/android-samples/blob/master/AndroidWearMap/Wearable/src/main/java/com/example/androidwearmap/MainActivity.java
+* Het gebruiken van de camera:
+  https://developer.android.com/training/camera/photobasics.html
