@@ -7,6 +7,10 @@ Je kan een account aanmaken en daarbij aangeven of je een hondenbaasje bent of e
 advertenties plaatsen met een foto van hun hond met een beschrijving. Als je geinteresseerd bent in een advertantie kan je vragen 
 om de email van het baasje en elkaar mailen om afspraken te maken.
 
+Screenshot of an activity:
+![screenshot](doc/screenshot_choose.jpeg)
+
+
 ## Belangrijkste functies van de app:
 Deze app heeft de volgende functies:
 * Account aanmaken/inloggen als baasje of uitlater.
