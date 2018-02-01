@@ -15,10 +15,12 @@ De app maakt ook gebruik van de camera van de gebruiker (baasje).
 Verder wordt er gebruik gemaakt van firebase als database om alle gegevens van de gebruikers op te slaan.
 
 ### Extern vergregen code:
-* Het gebruik van base 64:
+* Gebruik van base 64:
   https://stackoverflow.com/questions/4830711/how-to-convert-a-image-into-base64-string
   https://gist.github.com/WrathChaos/80cd7e613cd7577dae9326e3cd75e4be
-* Het neerzetten van de map met google api:
+* Neerzetten van de map met google api:
   https://github.com/googlemaps/android-samples/blob/master/AndroidWearMap/Wearable/src/main/java/com/example/androidwearmap/MainActivity.java
-* Het gebruiken van de camera:
+* Gebruiken van de camera:
   https://developer.android.com/training/camera/photobasics.html
+* Permissie vragen voor locatie/camera gebruik:
+  https://developer.android.com/training/permissions/requesting.html
