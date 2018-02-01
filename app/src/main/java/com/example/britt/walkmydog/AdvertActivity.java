@@ -168,18 +168,78 @@ public class AdvertActivity extends AppCompatActivity {
 
 
     /**
-     * Go to selected option in spinner.
+     * Show a dialog when GPS is disabled to change GPS settings.
      */
-    public void SelectOption(View view) {
-        // Log out when button is clicked.
-        String option = spinner.getSelectedItem().toString();
+    public void showSettingAlert() {
+        // Check if GPS is enabled.
+        String locationProviders = Settings.Secure.getString(getContentResolver(),
+                Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+        if (locationProviders == null || locationProviders.equals("")) {
 
-        if (option.equals("Log uit")) {
-            // Sign out in firebase.
-            FirebaseAuth.getInstance().signOut();
-            Intent intent = new Intent(AdvertActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
+            // Build a dialog with the choice to change GPS settings.
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+            alertDialog.setTitle("GPS instellingen!");
+            alertDialog.setMessage("GPS staat niet aan, wil je naar instellingen? ");
+            alertDialog.setPositiveButton("Instellingen",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            // Go to settings menu.
+                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            AdvertActivity.this.startActivity(intent);
+                        }
+                    });
+
+            // Close dialog without turning on gps.
+            alertDialog.setNegativeButton("Weigeren", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            alertDialog.show();
+        }
+    }
+
+
+    /**
+     * Get current latitude and longitude of the dog's boss.
+     */
+    public void getLocation() {
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        try{
+            if(mLocationPermissionsGranted){
+                makeAdvert.setEnabled(false);
+                Toast.makeText(AdvertActivity.this, "Waiting for current location",
+                        Toast.LENGTH_SHORT).show();
+
+                // Get last known location of device.
+                final Task location = mFusedLocationProviderClient.getLastLocation();
+                location.addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if(task.isSuccessful()){
+                            Location currentLocation = (Location) task.getResult();
+
+                            if (!(task.getResult() == null)) {
+
+                                // Set longitude and latitude given.
+                                latitude = currentLocation.getLatitude();
+                                longitude = currentLocation.getLongitude();
+                            }
+                        }
+                        else{
+                            Toast.makeText(AdvertActivity.this,"unable to " +
+                                    "get current location", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                makeAdvert.setEnabled(true);
+            }
+        }
+        catch (SecurityException e){
+            Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage() );
         }
     }
 
@@ -360,83 +420,6 @@ public class AdvertActivity extends AppCompatActivity {
 
 
     /**
-     * Get current latitude and longitude of the dog's boss.
-     */
-    public void getLocation() {
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        try{
-            if(mLocationPermissionsGranted){
-                makeAdvert.setEnabled(false);
-                Toast.makeText(AdvertActivity.this, "Waiting for current location",
-                        Toast.LENGTH_SHORT).show();
-
-                // Get last known location of device.
-                final Task location = mFusedLocationProviderClient.getLastLocation();
-                location.addOnCompleteListener(new OnCompleteListener() {
-                    @Override
-                    public void onComplete(@NonNull Task task) {
-                        if(task.isSuccessful()){
-                            Location currentLocation = (Location) task.getResult();
-
-                            if (!(task.getResult() == null)) {
-
-                                // Set longitude and latitude given.
-                                latitude = currentLocation.getLatitude();
-                                longitude = currentLocation.getLongitude();
-                            }
-                        }
-                        else{
-                            Toast.makeText(AdvertActivity.this,"unable to " +
-                                            "get current location", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-                makeAdvert.setEnabled(true);
-            }
-        }
-        catch (SecurityException e){
-            Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage() );
-        }
-    }
-
-
-    /**
-     * Show a dialog when GPS is disabled to change GPS settings.
-     */
-    public void showSettingAlert() {
-        // Check if GPS is enabled.
-        String locationProviders = Settings.Secure.getString(getContentResolver(),
-                Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-        if (locationProviders == null || locationProviders.equals("")) {
-
-            // Build a dialog with the choice to change GPS settings.
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-            alertDialog.setTitle("GPS instellingen!");
-            alertDialog.setMessage("GPS staat niet aan, wil je naar instellingen? ");
-            alertDialog.setPositiveButton("Instellingen",
-                    new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                    // Go to settings menu.
-                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    AdvertActivity.this.startActivity(intent);
-                }
-            });
-
-            // Close dialog without turning on gps.
-            alertDialog.setNegativeButton("Weigeren", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-            alertDialog.show();
-        }
-    }
-
-
-    /**
      * Put advert in database and go to next activity when button clicked.
      */
     public void makeAdvert(View view) {
@@ -459,14 +442,28 @@ public class AdvertActivity extends AppCompatActivity {
             databaseReference.child("users").child(id).child("advertState").setValue(true);
             databaseReference.child("dogs").child(id).child("dog").setValue(aDog);
 
-            getDescription.setText("");
-            getDogName.setText("");
-
             // Go to next activity to confirm the processing of the advert.
             Intent intent = new Intent(AdvertActivity.this, ConfirmActivity.class);
             intent.putExtra("name", dogName);
             intent.putExtra("photo", encodedPicture);
             startActivity(intent);
+        }
+    }
+
+
+    /**
+     * Go to selected option in spinner.
+     */
+    public void SelectOption(View view) {
+        // Log out when button is clicked.
+        String option = spinner.getSelectedItem().toString();
+
+        if (option.equals("Log uit")) {
+            // Sign out in firebase.
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(AdvertActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
         }
     }
 }
