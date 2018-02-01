@@ -56,4 +56,15 @@ Button en dialog gemaakt om lijst met favorieten leeg te maken.
 Gezorgd dat gebruikers ingelogd blijven na het afsluiten van de app.
 Zorgen dat bij het veranderen van een advertentie de oude advertentie als default erin staat.
 
+### dinsdag 30-1:
+Alles gecomment en code opgeschoond.
+
+### woensdag 31-1:
+Kleine bugs eruit gehaald en functies op een goede volgorde gezet.
+Verslag gemaakt.
+
+### donderdag 1-2:
+Laatste check gedaan en geprobeerd eventuele bugs nog te vinden.
+Filmpje gemaakt en alles ingeleverd.
+
 
