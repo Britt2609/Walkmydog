@@ -13,7 +13,7 @@ Deze app is alleen beschikbaar in portrait modus. De landscape modus is niet mee
 ![screenshot ConfirmActivity](doc/screenshot_confirm.jpeg)
 ![screenshot ChooseActivity](doc/screenshot_choose.jpeg)
 ![screenshot DogActivity](doc/screenshot_dog.jpeg)
-![screenshot ContactActivity](doc/screenshot_contact.jpeg)
+![screenshot ContactActivity](doc/screenshot_contact_spinner.jpeg)
 ![screenshot OverviewActivity](doc/screenshot_overview.jpeg)
 
 
