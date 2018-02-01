@@ -26,4 +26,4 @@ Verder wordt er gebruik gemaakt van firebase als database om alle gegevens van d
   https://developer.android.com/training/permissions/requesting.html
 
 ### Filmpje:
-https://youtu.be/Tq6hCfjklJk
+https://youtu.be/bvbY4eAVC5Q
